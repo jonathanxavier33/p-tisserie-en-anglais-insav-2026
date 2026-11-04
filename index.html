@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<!--
+ ╔══════════════════════════════════════════════════════════════════╗
+ ║          PASTRY ENGLISH PRO — Application éducative             ║
+ ║  © 2025 — Tous droits réservés.                                  ║
+ ║  Cette application, son code source, sa base de données         ║
+ ║  pédagogique, ses mécaniques de jeu, son design graphique       ║
+ ║  et son contenu sont protégés par le droit d'auteur             ║
+ ║  (Code de la Propriété Intellectuelle, art. L.111-1 et s.).     ║
+ ║  Toute reproduction, distribution, modification ou              ║
+ ║  exploitation commerciale sans autorisation écrite              ║
+ ║  préalable est strictement interdite.                           ║
+ ║  Version : 4.0.0                                                 ║
+ ╚══════════════════════════════════════════════════════════════════╝
+-->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Pastry English Pro">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#120D18">
+    <meta name="format-detection" content="telephone=no">
+    <title>Pastry English Pro</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { height: -webkit-fill-available; }
+
+    :root {
+        --bg0:   #120D18;
+        --bg1:   #1A1222;
+        --bg2:   #261A30;
+        --bg3:   #301F3A;
+        --card:  #1C1428;
+        --border:rgba(220,120,160,0.18);
+        --bord2: rgba(220,120,160,0.38);
+        --rose:  #C85080;
+        --rose2: #E87090;
+        --cream: #FAF0E8;
+        --text:  #EEE0DC;
+        --muted: #907080;
+        --hint:  #503040;
+        --green: #3A7058;
+        --green2:#58A880;
+        --wrong: #882828;
+        --wrong2:#C04048;
+        --gold:  #C89030;
+        --gold2: #EEBC60;
+        --lavender:#9070D0;
+        --lav2:  #B898EE;
+        --r:     12px;
+        --r2:    20px;
+        --shadow:0 8px 32px rgba(0,0,0,0.6);
+    }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background: var(--bg0); color: var(--text);
+        min-height: 100vh; min-height: -webkit-fill-available;
+        overflow-x: hidden; touch-action: manipulation;
+        -webkit-user-select: none; user-select: none;
+    }
+    /* Les champs de saisie doivent rester éditables (sinon bloqués sur iOS) */
+    input { -webkit-user-select: text; user-select: text; }
+
+    body::before {
+        content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        background:
+            radial-gradient(ellipse at 20% 0%, rgba(200,80,128,0.12) 0%, transparent 50%),
+            radial-gradient(ellipse at 85% 95%, rgba(144,112,208,0.1) 0%, transparent 45%);
+    }
+
+    .screen { position: relative; z-index: 1; }
+
+    /* ─── HOME ──────────────────────────────────────────────────── */
+    #home-screen {
+        display: flex; flex-direction: column; align-items: center;
+        justify-content: center; min-height: 100vh; min-height: -webkit-fill-available;
+        padding: 24px 20px;
+        padding-top: max(32px, env(safe-area-inset-top, 32px));
+        padding-bottom: max(24px, env(safe-area-inset-bottom, 24px));
+        text-align: center;
+    }
+
+    .home-logo {
+        width: 88px; height: 88px; border-radius: 22px; margin-bottom: 20px;
+        box-shadow: 0 0 0 1px var(--bord2), 0 16px 48px rgba(0,0,0,0.7);
+    }
+
+    .home-title {
+        font-family: 'Libre Baskerville', serif;
+        font-size: clamp(1.9rem, 5.5vw, 2.5rem);
+        font-weight: 700; color: var(--cream);
+        letter-spacing: -0.01em; line-height: 1.15; margin-bottom: 6px;
+    }
+    .home-title span { color: var(--rose2); }
+    .home-sub {
+        color: var(--muted); font-size: 0.8rem; font-weight: 400;
+        letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 26px;
+    }
+
+    .img-grid {
+        display: grid; grid-template-columns: 1fr 1fr;
+        gap: 8px; width: 100%; max-width: 320px; margin-bottom: 22px;
+    }
+    .img-grid img {
+        width: 100%; height: 108px; object-fit: cover;
+        border-radius: var(--r); border: 1px solid var(--border);
+        filter: brightness(0.82) saturate(0.9); background: var(--bg2);
+    }
+    .img-grid img:first-child { border-radius: 20px 8px 8px 8px; }
+    .img-grid img:nth-child(2){ border-radius: 8px 20px 8px 8px; }
+    .img-grid img:nth-child(3){ border-radius: 8px 8px 8px 20px; }
+    .img-grid img:last-child  { border-radius: 8px 8px 20px 8px; }
+
+    .home-stats {
+        width: 100%; max-width: 320px;
+        background: var(--card); border: 1px solid var(--bord2);
+        border-radius: var(--r2); padding: 14px 18px;
+        margin-bottom: 18px; display: none;
+    }
+    .home-stats-row { display: flex; align-items: center; gap: 14px; text-align: left; }
+    .stat-icon { font-size: 2rem; flex-shrink: 0; }
+    .stat-name { font-weight: 600; color: var(--rose2); font-size: 0.88rem; }
+    .stat-xp   { font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+
+    .pro-badge {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: linear-gradient(135deg, #1E0D28, #2C1438);
+        border: 1px solid var(--rose);
+        color: var(--rose2); font-size: 0.7rem; font-weight: 600;
+        letter-spacing: 0.08em; text-transform: uppercase;
+        padding: 4px 12px; border-radius: 20px; margin-bottom: 10px;
+    }
+    .home-count { font-size: 0.78rem; color: var(--muted); margin-bottom: 16px; }
+
+    .btn-primary {
+        width: 100%; max-width: 320px;
+        background: linear-gradient(135deg, var(--rose), #A03060);
+        color: white; border: none; border-radius: 50px;
+        padding: 17px 32px; font-family: 'DM Sans', sans-serif;
+        font-size: 1rem; font-weight: 600;
+        cursor: pointer; -webkit-appearance: none;
+        box-shadow: 0 4px 24px rgba(200,80,128,0.4);
+        transition: all 0.18s;
+    }
+    .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
+
+    .home-legal {
+        font-size: 0.6rem; color: var(--hint);
+        margin-top: 18px; line-height: 1.7; max-width: 280px;
+    }
+
+    /* ─── GAME SCREEN ───────────────────────────────────────────── */
+    #game-screen { display: none; flex-direction: column; min-height: 100vh; min-height: -webkit-fill-available; }
+
+    header {
+        background: var(--bg1); border-bottom: 1px solid var(--border);
+        padding: 10px 16px 12px;
+        padding-top: max(10px, env(safe-area-inset-top));
+        flex-shrink: 0; position: relative; z-index: 10;
+    }
+    .hdr-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .hdr-title { font-family: 'Libre Baskerville', serif; font-size: 1rem; font-weight: 700; color: var(--rose2); }
+
+    .btn-back {
+        background: var(--bg2); border: 1px solid var(--border);
+        color: var(--muted); width: 40px; height: 40px;
+        border-radius: 12px; font-size: 1.1rem; cursor: pointer;
+        -webkit-appearance: none; display: flex; align-items: center; justify-content: center;
+    }
+
+    .streak-bar {
+        display: flex; align-items: center; gap: 5px;
+        background: var(--bg2); border: 1px solid var(--border);
+        border-radius: 20px; padding: 4px 12px;
+        font-size: 0.75rem; color: var(--muted);
+    }
+    .streak-bar.hot { color: #FF8C42; border-color: rgba(255,140,66,0.4); }
+
+    .lvl-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .lvl-left { display: flex; align-items: center; gap: 8px; }
+    .lvl-icon { font-size: 1.4rem; }
+    .lvl-name { font-weight: 600; font-size: 0.82rem; color: var(--rose2); }
+    .lvl-sub  { font-size: 0.67rem; color: var(--muted); margin-top: 1px; }
+    .xp-pill  {
+        background: var(--bg2); border: 1px solid var(--border);
+        border-radius: 20px; padding: 4px 12px;
+        font-size: 0.76rem; font-weight: 600; color: var(--gold2);
+    }
+
+    .prog-wrap {
+        width: 100%; height: 20px;
+        background: var(--bg2); border: 1px solid var(--border);
+        border-radius: 10px; overflow: hidden; position: relative;
+    }
+    .prog-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--rose), var(--rose2));
+        border-radius: 10px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+        position: relative;
+    }
+    .prog-fill::after {
+        content: '🧁'; position: absolute; right: -2px; top: 50%;
+        transform: translateY(-50%); font-size: 0.88rem;
+        filter: drop-shadow(0 1px 3px rgba(0,0,0,0.5));
+    }
+
+    .lvl-dots { display: flex; justify-content: space-between; margin-top: 6px; padding: 0 2px; }
+    .lvl-dot  { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .lvl-dot-c {
+        width: 22px; height: 22px; border-radius: 50%;
+        background: var(--bg2); border: 1.5px solid var(--border);
+        display: flex; align-items: center; justify-content: center; font-size: 0.65rem;
+    }
+    .lvl-dot.done .lvl-dot-c { background: linear-gradient(135deg, var(--rose), var(--rose2)); border-color: var(--rose); }
+    .lvl-dot.now  .lvl-dot-c { border-color: var(--gold2); box-shadow: 0 0 8px rgba(200,144,48,0.4); }
+    .lvl-dot-lbl  { font-size: 0.48rem; color: var(--hint); font-weight: 500; }
+    .lvl-dot.done .lvl-dot-lbl, .lvl-dot.now .lvl-dot-lbl { color: var(--rose2); }
+
+    /* ─── MENUS ──────────────────────────────────────────────────── */
+    .menu-scroll {
+        display: flex; overflow-x: auto; padding: 7px 12px; gap: 6px;
+        background: var(--bg1); border-bottom: 1px solid var(--border);
+        white-space: nowrap; scrollbar-width: none; flex-shrink: 0;
+        -webkit-overflow-scrolling: touch;
+    }
+    .menu-scroll::-webkit-scrollbar { display: none; }
+
+    .menu-btn {
+        background: var(--bg2); border: 1px solid var(--border);
+        color: var(--muted); padding: 8px 13px;
+        border-radius: 20px; font-size: 0.78rem; font-weight: 500;
+        cursor: pointer; -webkit-appearance: none; flex-shrink: 0;
+        font-family: 'DM Sans', sans-serif; transition: all 0.14s;
+    }
+    .menu-btn.active { background: var(--rose); color: white; border-color: var(--rose); font-weight: 600; }
+
+    /* ─── MAIN ───────────────────────────────────────────────────── */
+    main {
+        flex: 1; display: flex; flex-direction: column;
+        align-items: center; padding: 14px;
+        padding-bottom: max(14px, env(safe-area-inset-bottom));
+        overflow-y: auto; background: var(--bg0);
+    }
+
+    .game-card {
+        background: var(--card); width: 100%; max-width: 440px;
+        border: 1px solid var(--border); border-radius: var(--r2);
+        padding: 20px; min-height: 300px;
+        display: flex; flex-direction: column; justify-content: center;
+        box-shadow: var(--shadow); position: relative; overflow: hidden;
+    }
+    .game-card::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, transparent, var(--rose), transparent); opacity: 0.7;
+    }
+
+    .mode-lbl {
+        font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase;
+        font-weight: 700; color: var(--rose2); margin-bottom: 6px;
+    }
+    .mode-lbl.lav { color: var(--lav2); }
+
+    .fc-count {
+        display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+        background: var(--bg2); border: 1px solid var(--border);
+        border-radius: 20px; padding: 3px 10px;
+        font-size: 0.72rem; color: var(--muted); margin-bottom: 10px;
+    }
+
+    .fc-word {
+        font-family: 'Libre Baskerville', serif;
+        font-size: clamp(1.6rem, 5vw, 2.1rem);
+        font-weight: 700; color: var(--cream);
+        margin: 10px 0; line-height: 1.2; cursor: pointer;
+    }
+    .fc-word.flip { color: var(--rose2); }
+    .fc-ex   { font-style: italic; color: var(--muted); font-size: 0.86rem; margin-top: 8px; line-height: 1.5; }
+    .fc-hint { color: var(--hint); font-size: 0.74rem; margin-top: 8px; }
+
+    .quiz-q { font-size: 0.84rem; color: var(--muted); margin-bottom: 4px; }
+    .quiz-q b { display: block; font-family: 'Libre Baskerville', serif; font-size: 1.45rem; color: var(--cream); margin-top: 4px; font-weight: 700; }
+
+    .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 14px; }
+    .quiz-opt {
+        background: var(--bg2); border: 1.5px solid var(--border);
+        color: var(--text); padding: 12px 10px;
+        font-size: 0.84rem; border-radius: var(--r); cursor: pointer;
+        font-weight: 500; min-height: 52px;
+        display: flex; align-items: center; justify-content: center;
+        text-align: center; line-height: 1.3;
+        -webkit-appearance: none; font-family: 'DM Sans', sans-serif;
+        transition: all 0.12s;
+    }
+    .quiz-opt:active { transform: scale(0.97); }
+    .quiz-opt.correct { background: rgba(58,112,88,0.25); border-color: var(--green2); color: var(--green2); }
+    .quiz-opt.wrong   { background: rgba(136,40,40,0.25); border-color: var(--wrong2); color: var(--wrong2); }
+    .quiz-opt:disabled { opacity: 0.8; cursor: default; }
+
+    .ctrl-area { width: 100%; max-width: 440px; margin-top: 12px; }
+    .btn-row   { display: flex; gap: 8px; align-items: center; }
+
+    .btn-nav {
+        background: var(--bg2); border: 1px solid var(--border);
+        color: var(--text); padding: 13px 16px; width: 100%;
+        border-radius: 50px; font-weight: 500; font-size: 0.86rem;
+        flex: 1; cursor: pointer; -webkit-appearance: none;
+        min-height: 48px; font-family: 'DM Sans', sans-serif;
+    }
+    .btn-nav:disabled { opacity: 0.4; cursor: default; }
+    .btn-nav.action  { background: linear-gradient(135deg, var(--rose), #A03060); color: white; border: none; font-weight: 600; }
+    .btn-nav.success { background: linear-gradient(135deg, var(--green), var(--green2)); color: white; border: none; }
+    .btn-nav.danger  { background: linear-gradient(135deg, var(--wrong), var(--wrong2)); color: white; border: none; }
+
+    .btn-sound {
+        background: var(--rose); border: none; color: white;
+        width: 48px; height: 48px; border-radius: 50%; font-size: 1.2rem;
+        cursor: pointer; -webkit-appearance: none;
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+
+    .role-box {
+        background: var(--bg2); border-left: 3px solid var(--rose);
+        border-radius: 0 var(--r) var(--r) 0;
+        padding: 12px; margin-bottom: 14px;
+    }
+    .role-scene  { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--rose2); margin-bottom: 5px; }
+    .role-dialog { font-style: italic; color: var(--muted); font-size: 0.86rem; line-height: 1.5; }
+
+    .hint-box {
+        background: var(--bg2); border-radius: var(--r);
+        border-left: 3px solid var(--lav2);
+        padding: 10px 12px; margin-top: 10px;
+        font-size: 0.8rem; color: var(--muted); line-height: 1.5;
+    }
+
+    .listen-btn {
+        width: 76px; height: 76px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--rose), #A03060);
+        border: none; color: white; font-size: 1.7rem;
+        cursor: pointer; margin: 12px auto; display: block;
+        -webkit-appearance: none;
+        box-shadow: 0 4px 20px rgba(200,80,128,0.45);
+    }
+    .listen-btn:active { transform: scale(0.95); }
+
+    .recipe-step {
+        background: var(--bg2); border: 1.5px solid var(--border);
+        color: var(--text); padding: 10px 14px;
+        border-radius: var(--r); cursor: pointer;
+        font-size: 0.82rem; display: flex; align-items: center; gap: 10px;
+        font-family: 'DM Sans', sans-serif; transition: border-color 0.12s;
+    }
+    .recipe-step.selected { border-color: var(--rose2); background: rgba(200,80,128,0.1); }
+    .recipe-step.done { border-color: var(--green2); background: rgba(58,112,88,0.15); color: var(--green2); }
+    .step-num {
+        width: 24px; height: 24px; border-radius: 50%;
+        background: var(--bg3); border: 1px solid var(--border);
+        font-size: 0.68rem; font-weight: 700; color: var(--muted);
+        display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .recipe-step.done .step-num { background: var(--green); border-color: var(--green); color: white; }
+
+    .trans-pill {
+        display: inline-block; align-self: flex-start;
+        background: rgba(144,112,208,0.15); border: 1px solid rgba(144,112,208,0.35);
+        color: var(--lav2); font-size: 0.7rem; font-weight: 600;
+        padding: 3px 10px; border-radius: 20px; margin-bottom: 10px;
+    }
+
+    .rush-timer {
+        font-family: 'Libre Baskerville', serif;
+        font-size: 2.8rem; font-weight: 700; color: var(--rose2);
+        font-variant-numeric: tabular-nums; margin: 6px 0;
+    }
+    .rush-timer.danger { color: var(--wrong2); }
+
+    .rush-input {
+        width: 100%; background: var(--bg2); border: 2px solid var(--bord2);
+        color: var(--text); font-size: 1rem; font-family: 'DM Sans', sans-serif;
+        font-weight: 500; border-radius: var(--r); padding: 13px 16px;
+        text-align: center; outline: none; margin-top: 10px; -webkit-appearance: none;
+    }
+    .rush-input:focus { border-color: var(--rose2); }
+
+    .world-q {
+        font-family: 'Libre Baskerville', serif;
+        font-size: 1.3rem; font-weight: 700; color: var(--cream); margin: 10px 0;
+    }
+
+    /* ─── MEMORY (nouveau) ───────────────────────────────────────── */
+    .mem-info { display: flex; justify-content: space-between; font-size: 0.76rem; color: var(--muted); margin-top: 2px; }
+    .mem-info b { color: var(--gold2); }
+    .mem-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+    .mem-card {
+        min-height: 68px; border-radius: var(--r); padding: 6px;
+        background: linear-gradient(135deg, var(--bg3), var(--bg2));
+        border: 1.5px solid var(--border); color: var(--muted);
+        font-family: 'DM Sans', sans-serif; font-size: 1.3rem; cursor: pointer;
+        display: flex; align-items: center; justify-content: center;
+        text-align: center; line-height: 1.2; -webkit-appearance: none;
+        transition: all 0.15s;
+    }
+    .mem-card:active { transform: scale(0.96); }
+    .mem-card.shown { font-size: 0.8rem; font-weight: 600; }
+    .mem-card.shown.fr { border-color: var(--rose2); color: var(--rose2); background: rgba(200,80,128,0.12); }
+    .mem-card.shown.en { border-color: var(--lav2); color: var(--lav2); background: rgba(144,112,208,0.14); }
+    .mem-card.matched { border-color: var(--green2); color: var(--green2); background: rgba(58,112,88,0.22); }
+    .mem-legend { display: flex; gap: 12px; justify-content: center; font-size: 0.68rem; margin-top: 10px; color: var(--muted); }
+    .mem-legend .f { color: var(--rose2); } .mem-legend .e { color: var(--lav2); }
+
+    .xp-pop {
+        position: fixed; top: 50%; left: 50%;
+        transform: translate(-50%,-50%);
+        background: rgba(18,13,24,0.92); backdrop-filter: blur(8px);
+        border: 1px solid var(--bord2);
+        color: var(--gold2); padding: 13px 22px;
+        border-radius: var(--r2); font-size: 1.1rem; font-weight: 700;
+        z-index: 1000; pointer-events: none;
+        animation: xpIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes xpIn {
+        from { opacity:0; transform:translate(-50%,-60%) scale(0.7); }
+        to   { opacity:1; transform:translate(-50%,-50%) scale(1); }
+    }
+
+    @media (max-width: 360px) {
+        .quiz-opt { font-size: 0.8rem; padding: 11px 8px; }
+        .fc-word  { font-size: 1.5rem; }
+        .menu-btn { padding: 7px 10px; font-size: 0.74rem; }
+    }
+    @supports (-webkit-touch-callout: none) {
+        .btn-primary, .btn-nav, .quiz-opt, .menu-btn { min-height: 44px; }
+    }
+    </style>
+</head>
+<body>
+
+<!-- ═══ HOME ═══════════════════════════════════════════════════════ -->
+<div id="home-screen" class="screen">
+    <svg class="home-logo" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="lb" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#200D30"/><stop offset="100%" stop-color="#120820"/>
+            </linearGradient>
+            <linearGradient id="lc" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#FFF0E8"/><stop offset="100%" stop-color="#F0C8D8"/>
+            </linearGradient>
+        </defs>
+        <rect width="512" height="512" rx="110" fill="url(#lb)"/>
+        <rect width="512" height="512" rx="110" fill="none" stroke="#C85080" stroke-width="3" opacity="0.45"/>
+        <path d="M152 310 L192 458 L320 458 L360 310 Z" fill="#9B6050"/>
+        <path d="M167 330 L197 440 L212 440 L187 330 Z" fill="#7A4838" opacity="0.5"/>
+        <path d="M228 330 L218 440 L243 440 L248 330 Z" fill="#7A4838" opacity="0.5"/>
+        <path d="M296 330 L291 440 L316 440 L316 330 Z" fill="#7A4838" opacity="0.5"/>
+        <ellipse cx="256" cy="304" rx="120" ry="32" fill="#6A3828"/>
+        <path d="M152 298 Q172 228 212 258 Q252 188 292 258 Q330 228 352 258 Q390 208 380 298 Q358 268 308 278 Q288 248 256 268 Q224 248 204 278 Q154 268 152 298 Z" fill="url(#lc)"/>
+        <circle cx="256" cy="200" r="28" fill="#C84060"/>
+        <ellipse cx="249" cy="191" rx="7" ry="5" fill="#E07090" opacity="0.6"/>
+        <path d="M256 172 Q260 148 278 158" stroke="#2A5020" stroke-width="6" fill="none" stroke-linecap="round"/>
+        <circle cx="202" cy="268" r="5" fill="#EEB050"/>
+        <circle cx="222" cy="248" r="4" fill="#E070B0"/>
+        <circle cx="292" cy="258" r="5" fill="#EEB050"/>
+        <circle cx="312" cy="244" r="4" fill="#9070D0"/>
+        <circle cx="247" cy="234" r="4" fill="#E070B0"/>
+        <circle cx="272" cy="222" r="5" fill="#9070D0"/>
+    </svg>
+
+    <h1 class="home-title">Pastry<br><span>English Pro</span></h1>
+    <p class="home-sub">CAP · MC · BP Pâtisserie</p>
+
+    <div class="img-grid">
+        <img src="https://images.unsplash.com/photo-1519915028121-7d3463d20b13?w=400&q=80" alt="Patisserie" onerror="this.style.visibility='hidden'">
+        <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=400&q=80" alt="Macarons" onerror="this.style.visibility='hidden'">
+        <img src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400&q=80" alt="Tarte" onerror="this.style.visibility='hidden'">
+        <img src="https://images.unsplash.com/photo-1488477304112-4944851de03d?w=400&q=80" alt="Chocolat" onerror="this.style.visibility='hidden'">
+    </div>
+
+    <div class="home-stats" id="home-stats">
+        <div class="home-stats-row">
+            <div class="stat-icon" id="h-icon">👨‍🍳</div>
+            <div>
+                <div class="stat-name" id="h-name">Niveau 1 · Apprentice</div>
+                <div class="stat-xp"   id="h-xp">0 XP · Commencez votre formation</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="pro-badge">✦ Formation professionnelle</div>
+    <div class="home-count" id="home-count"></div>
+    <button class="btn-primary" id="btn-start">Commencer la formation</button>
+
+    <p class="home-legal">
+        © 2025 Pastry English Pro. Tous droits réservés.<br>
+        Contenu protégé — Code de la Propriété Intellectuelle, art. L.111-1.
+    </p>
+</div>
+
+<!-- ═══ GAME SCREEN ════════════════════════════════════════════════ -->
+<div id="game-screen" class="screen">
+    <header>
+        <div class="hdr-row">
+            <button class="btn-back" id="btn-back" aria-label="Retour">←</button>
+            <span class="hdr-title">Pastry English Pro</span>
+            <div class="streak-bar" id="streak-bar">🔥 0</div>
+        </div>
+        <div class="lvl-row">
+            <div class="lvl-left">
+                <span class="lvl-icon" id="lvl-icon">👨‍🍳</span>
+                <div>
+                    <div class="lvl-name" id="lvl-name">Niveau 1 · Apprentice</div>
+                    <div class="lvl-sub"  id="lvl-sub">Débutant en pâtisserie</div>
+                </div>
+            </div>
+            <div class="xp-pill" id="xp-pill">0 XP</div>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+        <div class="lvl-dots" id="lvl-dots"></div>
+    </header>
+
+    <nav class="menu-scroll" id="mode-menu"></nav>
+    <nav class="menu-scroll" id="theme-menu"></nav>
+
+    <main>
+        <div class="game-card" id="game-card"></div>
+        <div class="ctrl-area"  id="ctrl-area"></div>
+    </main>
+</div>
+
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   PASTRY ENGLISH PRO — v4.0.0
+   © 2025 — Tous droits réservés.
+   Code source protégé — CPI art. L.111-1.
+   ════════════════════════════════════════════════════════════════════ */
+
+/* ─── VOCABULAIRE : CARTES & QUIZ ────────────────────────────────── */
+const DB = {
+    "Basic Ingredients": [
+        {fr:"La farine",          en:"Flour",                     ex:"Sieve the flour into a bowl."},
+        {fr:"Le sucre semoule",   en:"Caster sugar",              ex:"Cream butter with caster sugar."},
+        {fr:"Le sucre glace",     en:"Icing sugar",               ex:"Dust with icing sugar."},
+        {fr:"La cassonade",       en:"Brown sugar",               ex:"Brown sugar gives a deeper flavor."},
+        {fr:"Le sucre vanillé",   en:"Vanilla sugar",             ex:"Sprinkle vanilla sugar on top."},
+        {fr:"Le glucose",         en:"Glucose syrup",             ex:"Glucose syrup prevents crystallization."},
+        {fr:"Le miel",            en:"Honey",                     ex:"Warm the honey first."},
+        {fr:"Le beurre",          en:"Butter",                    ex:"Use softened butter."},
+        {fr:"Le beurre doux",     en:"Unsalted butter",           ex:"Pastry chefs prefer unsalted butter."},
+        {fr:"Le beurre demi-sel", en:"Salted butter",             ex:"Salted butter suits caramel."},
+        {fr:"Le beurre de tourage",en:"Laminating butter",        ex:"Keep the laminating butter cold."},
+        {fr:"Le beurre noisette", en:"Brown butter",              ex:"Cook butter until nutty brown."},
+        {fr:"La crème liquide",   en:"Liquid cream",              ex:"Whip cold liquid cream."},
+        {fr:"La crème fraîche épaisse",en:"Crème fraîche",        ex:"Fold in the crème fraîche."},
+        {fr:"Le lait entier",     en:"Whole milk",                ex:"Bring whole milk to a boil."},
+        {fr:"Le lait concentré sucré",en:"Sweetened condensed milk",ex:"Add sweetened condensed milk to the glaze."},
+        {fr:"L'oeuf entier",      en:"Whole egg",                 ex:"Beat whole eggs until fluffy."},
+        {fr:"Le jaune d'oeuf",    en:"Egg yolk",                  ex:"Use yolks for custards."},
+        {fr:"Le blanc d'oeuf",    en:"Egg white",                 ex:"Whisk whites to stiff peaks."},
+        {fr:"L'eau",              en:"Water",                     ex:"Add ice-cold water."},
+        {fr:"Le sel",             en:"Salt",                      ex:"A pinch of salt enhances flavors."},
+        {fr:"La fleur de sel",    en:"Flaky sea salt",            ex:"Finish with flaky sea salt."},
+        {fr:"La levure chimique", en:"Baking powder",             ex:"Sift baking powder with the flour."},
+        {fr:"La levure de boulanger",en:"Yeast",                  ex:"Dissolve the yeast in warm milk."},
+        {fr:"Le bicarbonate de soude",en:"Baking soda",           ex:"Baking soda helps cookies spread."},
+        {fr:"La fécule de maïs",  en:"Cornstarch",                ex:"Cornstarch thickens the cream."},
+        {fr:"La gélatine",        en:"Gelatin",                   ex:"Bloom the gelatin in cold water."},
+        {fr:"La farine complète", en:"Wholemeal flour",           ex:"Mix wholemeal flour with white flour."},
+        {fr:"La semoule",         en:"Semolina",                  ex:"Add semolina for a crunchy texture."},
+        {fr:"L'huile neutre",     en:"Neutral oil",               ex:"Use neutral oil in the sponge."},
+        {fr:"La pâte d'amandes",  en:"Marzipan",                  ex:"Roll out the marzipan thinly."}
+    ],
+    "Chocolate & Fillings": [
+        {fr:"Le chocolat noir",       en:"Dark chocolate",        ex:"Temper dark chocolate at 31°C."},
+        {fr:"Le chocolat au lait",    en:"Milk chocolate",        ex:"Milk chocolate is sweeter."},
+        {fr:"Le chocolat blanc",      en:"White chocolate",       ex:"White chocolate burns easily."},
+        {fr:"Le chocolat de couverture",en:"Couverture chocolate",ex:"Use couverture chocolate for dipping."},
+        {fr:"Les pépites de chocolat",en:"Chocolate chips",       ex:"Fold in the chocolate chips."},
+        {fr:"Les copeaux de chocolat",en:"Chocolate shavings",    ex:"Top with chocolate shavings."},
+        {fr:"Le beurre de cacao",     en:"Cocoa butter",          ex:"Cocoa butter gives a smooth melt."},
+        {fr:"Les fèves de cacao",     en:"Cocoa beans",           ex:"Cocoa beans are roasted first."},
+        {fr:"Le cacao en poudre",     en:"Cocoa powder",          ex:"Use Dutch-processed cocoa."},
+        {fr:"La poudre d'amandes",    en:"Almond flour",          ex:"Use fine almond flour for macarons."},
+        {fr:"La poudre de noisettes", en:"Hazelnut flour",        ex:"Toast hazelnut flour first."},
+        {fr:"La pâte de pistache",    en:"Pistachio paste",       ex:"Add pistachio paste for flavor."},
+        {fr:"La pâte de noisettes",   en:"Hazelnut paste",        ex:"Mix hazelnut paste into the cream."},
+        {fr:"Le praliné",             en:"Praline paste",         ex:"Fold praline into mousse."},
+        {fr:"Le gianduja",            en:"Gianduja",              ex:"Melt the gianduja gently."},
+        {fr:"Le nougatine",           en:"Nougatine",             ex:"Crush the nougatine into pieces."},
+        {fr:"Le caramel",             en:"Caramel",               ex:"Cook the caramel to amber."},
+        {fr:"La confiture",           en:"Jam",                   ex:"Spread a thin layer of jam."},
+        {fr:"La crème de marron",     en:"Chestnut spread",       ex:"Pipe the chestnut spread in vermicelli."},
+        {fr:"Les amandes effilées",   en:"Sliced almonds",        ex:"Decorate with sliced almonds."},
+        {fr:"Les amandes entières",   en:"Whole almonds",         ex:"Roast the whole almonds."},
+        {fr:"Les noisettes entières", en:"Whole hazelnuts",       ex:"Toast the whole hazelnuts."},
+        {fr:"Les noisettes concassées",en:"Crushed hazelnuts",    ex:"Sprinkle with crushed hazelnuts."},
+        {fr:"Les noix",               en:"Walnuts",               ex:"Chop the walnuts coarsely."},
+        {fr:"Les noix de pécan",      en:"Pecans",                ex:"Caramelize the pecans."},
+        {fr:"Les pistaches",          en:"Pistachios",            ex:"Chop pistachios for garnish."},
+        {fr:"La noix de coco râpée",  en:"Desiccated coconut",    ex:"Roll the balls in desiccated coconut."},
+        {fr:"Les raisins secs",       en:"Raisins",               ex:"Soak raisins in rum."},
+        {fr:"Les fruits confits",     en:"Candied fruits",        ex:"Dice candied fruits evenly."}
+    ],
+    "Fruits & Flavors": [
+        {fr:"La gousse de vanille", en:"Vanilla bean",          ex:"Split and scrape the bean."},
+        {fr:"L'extrait de vanille", en:"Vanilla extract",       ex:"Add vanilla extract at the end."},
+        {fr:"La cannelle",          en:"Cinnamon",              ex:"Cinnamon adds warmth."},
+        {fr:"Le gingembre",         en:"Ginger",                ex:"Grate fresh ginger finely."},
+        {fr:"La muscade",           en:"Nutmeg",                ex:"Grate a little nutmeg."},
+        {fr:"La fève tonka",        en:"Tonka bean",            ex:"Grate tonka bean into the cream."},
+        {fr:"Le thé matcha",        en:"Matcha",                ex:"Sift the matcha to avoid lumps."},
+        {fr:"Le café",              en:"Coffee",                ex:"Dissolve coffee in hot water."},
+        {fr:"Le rhum",              en:"Rum",                   ex:"Soak the sponge in rum syrup."},
+        {fr:"La menthe",            en:"Mint",                  ex:"Garnish with fresh mint."},
+        {fr:"Le sirop d'érable",    en:"Maple syrup",           ex:"Drizzle with maple syrup."},
+        {fr:"L'eau de rose",        en:"Rose water",            ex:"Add a drop of rose water."},
+        {fr:"Le zeste de citron",   en:"Lemon zest",            ex:"Zest organic lemons only."},
+        {fr:"Le zeste d'orange",    en:"Orange zest",           ex:"Blanch orange zest."},
+        {fr:"La fleur d'oranger",   en:"Orange blossom water",  ex:"Flavors madeleines."},
+        {fr:"Le citron",            en:"Lemon",                 ex:"Squeeze the lemon juice."},
+        {fr:"Le citron vert",       en:"Lime",                  ex:"Grate lime zest over the cream."},
+        {fr:"L'orange",             en:"Orange",                ex:"Cut the orange into segments."},
+        {fr:"La framboise",         en:"Raspberry",             ex:"Fresh raspberries for decoration."},
+        {fr:"La fraise",            en:"Strawberry",            ex:"Hull strawberries first."},
+        {fr:"La myrtille",          en:"Blueberry",             ex:"Scatter blueberries on top."},
+        {fr:"Le cassis",            en:"Blackcurrant",          ex:"Blackcurrant puree is quite tart."},
+        {fr:"La cerise",            en:"Cherry",                ex:"Pit the cherries first."},
+        {fr:"La pomme",             en:"Apple",                 ex:"Slice the apples thinly."},
+        {fr:"La poire",             en:"Pear",                  ex:"Poach the pears in syrup."},
+        {fr:"La pêche",             en:"Peach",                 ex:"Peel the peaches after blanching."},
+        {fr:"La figue",             en:"Fig",                   ex:"Cut the figs in quarters."},
+        {fr:"La rhubarbe",          en:"Rhubarb",               ex:"Cook the rhubarb with sugar."},
+        {fr:"L'ananas",             en:"Pineapple",             ex:"Caramelize the pineapple slices."},
+        {fr:"La banane",            en:"Banana",                ex:"Use very ripe bananas."},
+        {fr:"La noix de coco",      en:"Coconut",               ex:"Coconut milk makes the cream richer."},
+        {fr:"La mangue",            en:"Mango",                 ex:"Use ripe mango puree."},
+        {fr:"Le fruit de la passion",en:"Passion fruit",        ex:"Passion fruit curd is delicious."},
+        {fr:"L'abricot",            en:"Apricot",               ex:"Apricot glaze adds shine."}
+    ],
+    "Professional Tools": [
+        {fr:"Le fouet",               en:"Whisk",               ex:"Use a balloon whisk."},
+        {fr:"La maryse",              en:"Spatula",             ex:"Scrape the bowl with the spatula."},
+        {fr:"La spatule coudée",      en:"Offset spatula",      ex:"Level the cream with an offset spatula."},
+        {fr:"La corne",               en:"Bench scraper",       ex:"Divide dough with a bench scraper."},
+        {fr:"Le batteur",             en:"Stand mixer",         ex:"Attach the paddle."},
+        {fr:"Le robot-coupe",         en:"Food processor",      ex:"Grind the nuts in the food processor."},
+        {fr:"Le mixeur plongeant",    en:"Immersion blender",   ex:"Blend the ganache with an immersion blender."},
+        {fr:"Le moule à tarte",       en:"Tart pan",            ex:"Use a fluted tart pan."},
+        {fr:"Le cercle à entremets",  en:"Cake ring",           ex:"Set the ring on a tray."},
+        {fr:"Le cercle à tarte",      en:"Tart ring",           ex:"Place the tart ring on a mat."},
+        {fr:"Le moule à madeleines",  en:"Madeleine tray",      ex:"Butter the madeleine tray."},
+        {fr:"Le moule à cake",        en:"Loaf pan",            ex:"Line the loaf pan with paper."},
+        {fr:"La poche à douille",     en:"Piping bag",          ex:"Fill the bag halfway."},
+        {fr:"La douille unie",        en:"Round tip",           ex:"Small round tip for details."},
+        {fr:"La douille étoile",      en:"Star tip",            ex:"Star tip creates rosettes."},
+        {fr:"Le rouleau à pâtisserie",en:"Rolling pin",         ex:"Use a French rolling pin."},
+        {fr:"La balance électronique",en:"Digital scale",       ex:"Tare before weighing."},
+        {fr:"Le thermomètre sonde",   en:"Probe thermometer",   ex:"Check core temperature."},
+        {fr:"Le chinois",             en:"Fine sieve",          ex:"Pass through a fine sieve."},
+        {fr:"Le tamis",               en:"Sifter",              ex:"Use a sifter for the flour."},
+        {fr:"Le pinceau",             en:"Pastry brush",        ex:"Brush with a pastry brush."},
+        {fr:"Le papier cuisson",      en:"Parchment paper",     ex:"Line the tray with parchment paper."},
+        {fr:"Le tapis en silicone",   en:"Silicone mat",        ex:"Bake macarons on a silicone mat."},
+        {fr:"La plaque de cuisson",   en:"Baking tray",         ex:"Grease the baking tray."},
+        {fr:"Le four",                en:"Oven",                ex:"Preheat the oven."},
+        {fr:"Le cul-de-poule",        en:"Mixing bowl",         ex:"Use a stainless steel mixing bowl."},
+        {fr:"La casserole",           en:"Saucepan",            ex:"Heat the milk in a saucepan."},
+        {fr:"Le bain-marie",          en:"Water bath",          ex:"Melt the chocolate in a water bath."},
+        {fr:"Le chalumeau",           en:"Blowtorch",           ex:"Caramelize the sugar with a blowtorch."},
+        {fr:"Le couteau scie",        en:"Serrated knife",      ex:"Slice the sponge with a serrated knife."},
+        {fr:"Le couteau d'office",    en:"Paring knife",        ex:"Peel the apples with a paring knife."},
+        {fr:"La râpe",                en:"Grater",              ex:"Use a fine grater for the zest."},
+        {fr:"L'emporte-pièce",        en:"Cookie cutter",       ex:"Cut out shapes with a cookie cutter."},
+        {fr:"Le laminoir",            en:"Dough sheeter",       ex:"Roll the dough through the dough sheeter."},
+        {fr:"La cellule de refroidissement",en:"Blast chiller", ex:"Cool the cakes in the blast chiller."},
+        {fr:"Le minuteur",            en:"Timer",               ex:"Set the timer for ten minutes."}
+    ],
+    "Basic Techniques": [
+        {fr:"Macaroner",           en:"Macaronage",          ex:"Fold until macaronage."},
+        {fr:"Monter les blancs",   en:"Whip egg whites",     ex:"Whip to stiff peaks."},
+        {fr:"Incorporer délicatement",en:"Fold in",          ex:"Fold in the flour gently."},
+        {fr:"Mélanger",            en:"Mix",                 ex:"Mix until just combined."},
+        {fr:"Fouetter",            en:"Whisk",               ex:"Whisk the eggs and sugar."},
+        {fr:"Pétrir",              en:"Knead",               ex:"Knead the dough for ten minutes."},
+        {fr:"Tamiser",             en:"Sift",                ex:"Sift the flour twice."},
+        {fr:"Peser",               en:"Weigh",               ex:"Weigh all the ingredients first."},
+        {fr:"Tempérer",            en:"Temper",              ex:"Temper chocolate for shine."},
+        {fr:"Fondre",              en:"Melt",                ex:"Melt the chocolate slowly."},
+        {fr:"Faire bouillir",      en:"Boil",                ex:"Boil the cream."},
+        {fr:"Frémir",              en:"Simmer",              ex:"Let the sauce simmer."},
+        {fr:"Réduire",             en:"Reduce",              ex:"Reduce the syrup by half."},
+        {fr:"Caraméliser",         en:"Caramelize",          ex:"Caramelize the sugar until amber."},
+        {fr:"Chemiser",            en:"Line",                ex:"Line the mold with parchment."},
+        {fr:"Beurrer et fariner",  en:"Grease and flour",    ex:"Grease and flour the mold."},
+        {fr:"Abaisser",            en:"Roll out",            ex:"Roll out to 3mm thick."},
+        {fr:"Étaler",              en:"Spread",              ex:"Spread the cream evenly."},
+        {fr:"Détailler",           en:"Cut out",             ex:"Cut out circles of dough."},
+        {fr:"Piquer",              en:"Prick",               ex:"Prick the dough with a fork."},
+        {fr:"Pincer",              en:"Crimp",               ex:"Crimp the tart edges."},
+        {fr:"Dorer",               en:"Egg wash",            ex:"Egg wash before baking."},
+        {fr:"Cuire à blanc",       en:"Blind bake",          ex:"Blind bake with weights."},
+        {fr:"Préchauffer le four", en:"Preheat the oven",    ex:"Preheat the oven to 180°C."},
+        {fr:"Laisser pousser",     en:"Proof",               ex:"Proof the dough until doubled."},
+        {fr:"Tourer",              en:"Laminate",            ex:"Laminate the dough with three folds."},
+        {fr:"Démouler",            en:"Unmold",              ex:"Unmold the cake when cool."},
+        {fr:"Refroidir",           en:"Cool",                ex:"Cool on a wire rack."},
+        {fr:"Congeler",            en:"Freeze",              ex:"Freeze the insert overnight."},
+        {fr:"Glacer",              en:"Glaze",               ex:"Glaze with apricot jam."},
+        {fr:"Napper",              en:"Coat",                ex:"Coat the cake with the sauce."},
+        {fr:"Saupoudrer",          en:"Dust",                ex:"Dust with cocoa powder."},
+        {fr:"Décorer",             en:"Decorate",            ex:"Decorate with fresh fruit."},
+        {fr:"Pocher",              en:"Pipe",                ex:"Pipe onto baking sheet."}
+    ]
+};
+
+/* ─── VOCABULAIRE : TRADUCTION PAR FICHES CAP ────────────────────── */
+const DB_TRANS = {
+    "Les Meringues": [
+        {fr:"La meringue italienne", en:"Italian meringue",     ex:"Cook sugar to 121°C."},
+        {fr:"La meringue française", en:"French meringue",      ex:"French meringue is lighter."},
+        {fr:"La meringue suisse",    en:"Swiss meringue",       ex:"Heat whites to 45-50°C."},
+        {fr:"La pavlova",            en:"Pavlova",              ex:"Top the pavlova with cream and fruit."},
+        {fr:"Monter les blancs",     en:"Whip the egg whites",  ex:"Whip to stiff peaks."},
+        {fr:"Les pics fermes",       en:"Stiff peaks",          ex:"Whip until stiff peaks form."},
+        {fr:"Les pics mous",         en:"Soft peaks",           ex:"Whip the cream to soft peaks."},
+        {fr:"Serrer les blancs",     en:"Tighten the whites",   ex:"Add sugar to tighten the whites."},
+        {fr:"Verser le sucre cuit",  en:"Pour cooked sugar",    ex:"Pour onto whipped whites."},
+        {fr:"Le thermomètre à sucre",en:"Sugar thermometer",    ex:"Check the syrup with a sugar thermometer."},
+        {fr:"Le crémor tartare",     en:"Cream of tartar",      ex:"Cream of tartar stabilizes the whites."},
+        {fr:"Laisser refroidir",     en:"Let cool",             ex:"Let cool while mixing."},
+        {fr:"Dresser",               en:"Pipe",                 ex:"Pipe onto baking sheet."},
+        {fr:"Sécher au four",        en:"Dry in the oven",      ex:"Dry at 100°C for 2 hours."},
+        {fr:"Le sucre semoule",      en:"Caster sugar",         ex:"Add caster sugar gradually."},
+        {fr:"L'extrait de vanille",  en:"Vanilla extract",      ex:"Add for flavor."}
+    ],
+    "Les Biscuits": [
+        {fr:"Le biscuit succès",     en:"Success biscuit",         ex:"Made with hazelnut powder."},
+        {fr:"Le biscuit dacquois",   en:"Dacquoise biscuit",       ex:"A nut-based biscuit."},
+        {fr:"Le biscuit joconde",    en:"Joconde biscuit",         ex:"An almond sponge cake."},
+        {fr:"La génoise",            en:"Genoise sponge",          ex:"Genoise is whisked over heat."},
+        {fr:"Le biscuit cuillère",   en:"Ladyfinger biscuit",      ex:"Used in tiramisu."},
+        {fr:"Le biscuit roulé",      en:"Sponge roll",             ex:"Roll the sponge while it is warm."},
+        {fr:"Le biscuit de Savoie",  en:"Savoy sponge",            ex:"Savoy sponge is very light."},
+        {fr:"La pâte à biscuit",     en:"Sponge batter",           ex:"Pour the sponge batter into the pan."},
+        {fr:"Tamiser",               en:"Sift",                    ex:"Sift the almond flour."},
+        {fr:"Monter au ruban",       en:"Whisk to ribbon stage",   ex:"Whisk eggs until ribbon."},
+        {fr:"Imbiber",               en:"Soak",                    ex:"Soak the sponge with syrup."},
+        {fr:"Le sirop d'imbibage",   en:"Soaking syrup",           ex:"Brush the soaking syrup on the sponge."},
+        {fr:"Le tant pour tant",     en:"Equal parts almond flour and icing sugar", ex:"Sift the equal parts together."},
+        {fr:"Le beurre fondu",       en:"Melted butter",           ex:"Fold in the melted butter last."},
+        {fr:"La poudre d'amandes",   en:"Almond flour",            ex:"Use fine almond flour."},
+        {fr:"Le sucre glace",        en:"Icing sugar",             ex:"Dust before baking."},
+        {fr:"La fécule de pomme de terre",en:"Potato starch",      ex:"Makes biscuits lighter."}
+    ],
+    "La Pâte à Choux": [
+        {fr:"La pâte à choux",                  en:"Choux pastry",         ex:"Choux rises in the oven."},
+        {fr:"Le craquelin",                     en:"Craquelin",            ex:"Creates a crispy top."},
+        {fr:"Faire bouillir l'eau et le beurre",en:"Boil water and butter",ex:"Boil together."},
+        {fr:"Ajouter la farine",                en:"Add the flour",        ex:"Add flour all at once."},
+        {fr:"Dessécher la pâte",                en:"Dry the dough",        ex:"Dry on the heat."},
+        {fr:"Ajouter les oeufs progressivement",en:"Add eggs gradually",   ex:"Add one by one."},
+        {fr:"La texture en V",                  en:"V-shaped ribbon",      ex:"The dough should fall in a V shape."},
+        {fr:"Dresser",                          en:"Pipe",                 ex:"Pipe onto baking sheet."},
+        {fr:"Dorer",                            en:"Egg wash",             ex:"Egg wash before baking."},
+        {fr:"Cuire à 200°C",                    en:"Bake at 200°C",        ex:"Bake until golden."},
+        {fr:"La cassonade",                     en:"Brown sugar",          ex:"Use for craquelin."},
+        {fr:"L'éclair",                         en:"Éclair",               ex:"Fill the éclair with pastry cream."},
+        {fr:"Le chou",                          en:"Cream puff",           ex:"Fill each cream puff."},
+        {fr:"La religieuse",                    en:"Religieuse",           ex:"Stack two choux to make a religieuse."},
+        {fr:"Le Paris-Brest",                   en:"Paris-Brest",          ex:"Pipe a ring of choux for the Paris-Brest."},
+        {fr:"Le Saint-Honoré",                  en:"Saint-Honoré",         ex:"Dip the choux in caramel for the Saint-Honoré."},
+        {fr:"Les profiteroles",                 en:"Profiteroles",         ex:"Serve the profiteroles with hot chocolate sauce."},
+        {fr:"La gougère",                       en:"Cheese puff",          ex:"Add grated cheese to make a cheese puff."},
+        {fr:"Fourrer",                          en:"Fill",                 ex:"Fill the puffs with cream."}
+    ],
+    "Les Pâtes Friables": [
+        {fr:"La pâte sucrée",       en:"Sweet pastry",        ex:"Used for tarts."},
+        {fr:"La pâte sablée",       en:"Shortbread pastry",   ex:"Crumbly and rich."},
+        {fr:"La pâte brisée",       en:"Shortcrust pastry",   ex:"Used for savory tarts."},
+        {fr:"Le sablé breton",      en:"Breton shortbread",   ex:"Breton shortbread is rich in butter."},
+        {fr:"Le crémage",           en:"Creaming method",     ex:"Cream butter and sugar first."},
+        {fr:"Le sablage",           en:"Sablage method",      ex:"Rub butter into flour."},
+        {fr:"Le beurre pommade",    en:"Softened butter",     ex:"Use butter at room temperature."},
+        {fr:"Fraiser",              en:"Smear the dough",     ex:"Smear the dough with the heel of your hand."},
+        {fr:"Filmer",               en:"Wrap in film",        ex:"Wrap and chill the dough."},
+        {fr:"Réserver au froid",    en:"Rest in the fridge",  ex:"Rest pastry in the fridge."},
+        {fr:"Foncer un moule",      en:"Line a mold",         ex:"Line the tart pan."},
+        {fr:"Le fond de tarte",     en:"Tart base",           ex:"Prick the tart base."},
+        {fr:"Piquer le fond",       en:"Prick the base",      ex:"Prick the base with a fork."},
+        {fr:"Cuire à blanc",        en:"Blind bake",          ex:"Blind bake with baking beans."},
+        {fr:"Les billes de cuisson",en:"Baking beans",        ex:"Fill the shell with baking beans."},
+        {fr:"La tartelette",        en:"Tartlet",             ex:"Fill each tartlet with cream."},
+        {fr:"La tarte au citron",   en:"Lemon tart",          ex:"Top the lemon tart with meringue."},
+        {fr:"La tarte Tatin",       en:"Tarte Tatin",         ex:"Flip the Tarte Tatin while warm."},
+        {fr:"Le crumble",           en:"Crumble",             ex:"Grate frozen crumble over fruit."}
+    ],
+    "Les Crèmes": [
+        {fr:"La crème chantilly",   en:"Whipped cream",       ex:"Whip cold cream to soft peaks."},
+        {fr:"La crème pâtissière",  en:"Pastry cream",        ex:"Thickens with starch."},
+        {fr:"La crème anglaise",    en:"Custard sauce",       ex:"Cook custard sauce to 83°C."},
+        {fr:"La crème chiboust",    en:"Chiboust cream",      ex:"Contains Italian meringue."},
+        {fr:"La crème mousseline",  en:"Mousseline cream",    ex:"Pastry cream enriched with butter."},
+        {fr:"La crème diplomate",   en:"Diplomat cream",      ex:"Has whipped cream."},
+        {fr:"La crème bavaroise",   en:"Bavarian cream",      ex:"Set with gelatin."},
+        {fr:"La crème d'amande",    en:"Almond cream",        ex:"Spread the almond cream in the tart."},
+        {fr:"La frangipane",        en:"Frangipane",          ex:"Frangipane is almond cream with pastry cream."},
+        {fr:"La crème au beurre",   en:"Buttercream",         ex:"Beat the buttercream until smooth."},
+        {fr:"La crème brûlée",      en:"Crème brûlée",        ex:"Caramelize the top of the crème brûlée."},
+        {fr:"Le lemon curd",        en:"Lemon curd",          ex:"Cook the lemon curd gently."},
+        {fr:"Le mascarpone",        en:"Mascarpone",          ex:"Whisk the mascarpone with sugar."},
+        {fr:"Blanchir les jaunes",  en:"Whiten the yolks",    ex:"Whisk with sugar until pale."},
+        {fr:"Cuire à la nappe",     en:"Cook until it coats the spoon",ex:"Cook until it coats the back of the spoon."},
+        {fr:"Le bain de glace",     en:"Ice bath",            ex:"Cool the cream in an ice bath."},
+        {fr:"Filmer au contact",    en:"Cover with film",     ex:"Press film directly on surface."},
+        {fr:"La gélatine en feuille",en:"Leaf gelatin",       ex:"Soak in cold water."},
+        {fr:"La poudre à crème",    en:"Custard powder",      ex:"Use to thicken."}
+    ],
+    "Les Mousses": [
+        {fr:"La mousse aux fruits",   en:"Fruit mousse",         ex:"Needs gelatin."},
+        {fr:"La mousse au chocolat",  en:"Chocolate mousse",     ex:"Can use ganache."},
+        {fr:"La mousse au caramel",   en:"Caramel mousse",       ex:"Cook the caramel before adding cream."},
+        {fr:"La pâte à bombe",        en:"Pâte à bombe",         ex:"Uses cooked sugar."},
+        {fr:"La ganache montée",      en:"Whipped ganache",      ex:"Whip cooled ganache."},
+        {fr:"La pulpe de fruit",      en:"Fruit puree",          ex:"Use high-quality puree."},
+        {fr:"Monter la crème",        en:"Whip the cream",       ex:"Whip to soft peaks."},
+        {fr:"Incorporer délicatement",en:"Fold in gently",       ex:"Fold to keep light."},
+        {fr:"Ramollir la gélatine",   en:"Soften the gelatin",   ex:"Soften the gelatin in cold water."},
+        {fr:"Faire fondre la gélatine",en:"Melt the gelatin",    ex:"Melt the gelatin for a few seconds."},
+        {fr:"Le chocolat fondu",      en:"Melted chocolate",     ex:"Let the melted chocolate cool slightly."},
+        {fr:"Le crémeux",             en:"Crémeux",              ex:"Pour the crémeux into the insert mold."},
+        {fr:"L'insert",               en:"Insert",               ex:"Place the frozen insert in the center."},
+        {fr:"La texture aérienne",    en:"Airy texture",         ex:"Fold gently to keep an airy texture."},
+        {fr:"Prendre au froid",       en:"Set in the fridge",    ex:"Let it set in the fridge for four hours."},
+        {fr:"La couverture",          en:"Couverture chocolate", ex:"Use for best results."}
+    ],
+    "Les Ganaches": [
+        {fr:"La ganache noire",     en:"Dark chocolate ganache",  ex:"Pour hot cream over chocolate."},
+        {fr:"La ganache lait",      en:"Milk chocolate ganache",  ex:"Milk chocolate is sweeter."},
+        {fr:"La ganache blanche",   en:"White chocolate ganache", ex:"White chocolate is delicate."},
+        {fr:"La ganache montée",    en:"Whipped ganache",         ex:"Whip cooled ganache."},
+        {fr:"La ganache caramel",   en:"Caramel ganache",         ex:"Add caramel to chocolate."},
+        {fr:"La ganache praliné",   en:"Praline ganache",         ex:"Mix praline into the ganache."},
+        {fr:"La ganache vanille",   en:"Vanilla ganache",         ex:"Infuse the cream with vanilla."},
+        {fr:"La ganache à rouler",  en:"Truffle ganache",         ex:"Chill the truffle ganache until firm."},
+        {fr:"Les truffes",          en:"Truffles",                ex:"Roll the truffles in cocoa powder."},
+        {fr:"Rouler dans le cacao", en:"Roll in cocoa powder",    ex:"Roll the balls in cocoa powder."},
+        {fr:"Infuser",              en:"Infuse",                  ex:"Infuse the cream for ten minutes."},
+        {fr:"Faire bouillir la crème",en:"Boil the cream",        ex:"Boil the cream, then pour it over the chocolate."},
+        {fr:"Emulsionner",          en:"Emulsify",                ex:"Emulsify from the center."},
+        {fr:"Mixer à l'aide du mixeur plongeant",en:"Use an immersion blender",ex:"Use an immersion blender for a smooth ganache."},
+        {fr:"Cristalliser",         en:"Crystallize",             ex:"Let crystallize overnight."},
+        {fr:"Le sucre inverti",     en:"Invert sugar",            ex:"Improves texture."}
+    ],
+    "Les Glaçages": [
+        {fr:"Le glaçage chocolat",  en:"Chocolate glaze",   ex:"Glaze at 35°C."},
+        {fr:"Le glaçage miroir",    en:"Mirror glaze",      ex:"Mirror glaze gives shine."},
+        {fr:"Le glaçage fruits",    en:"Fruit glaze",       ex:"Use fruit puree for color."},
+        {fr:"Le glaçage caramel",   en:"Caramel glaze",     ex:"Pour the caramel glaze while warm."},
+        {fr:"Le glaçage à l'eau",   en:"Water icing",       ex:"Mix icing sugar and water for water icing."},
+        {fr:"Le fondant",           en:"Fondant",           ex:"Warm the fondant gently."},
+        {fr:"La glace royale",      en:"Royal icing",       ex:"Pipe the royal icing onto cookies."},
+        {fr:"Le nappage neutre",    en:"Neutral glaze",     ex:"Brush on fruit tarts."},
+        {fr:"La pectine",           en:"Pectin",            ex:"Pectin thickens glazes."},
+        {fr:"Le sirop de glucose",  en:"Glucose syrup",     ex:"Add glucose syrup to the glaze."},
+        {fr:"Le colorant alimentaire",en:"Food coloring",   ex:"Add a drop of food coloring."},
+        {fr:"Le spray velours",     en:"Velvet spray",      ex:"Spray the cake with velvet spray."},
+        {fr:"Glacer au pinceau",    en:"Brush glaze",       ex:"Brush glaze over the pastry."},
+        {fr:"Mixer",                en:"Blend",             ex:"Blend until smooth."},
+        {fr:"Passer à la passette", en:"Strain",            ex:"Strain for smoothness."}
+    ],
+    "Les Petits Fours": [
+        {fr:"Les langues de chat",    en:"Cat's tongues",       ex:"Pipe in thin strips."},
+        {fr:"Les tuiles aux amandes", en:"Almond tiles",        ex:"Shape while warm."},
+        {fr:"Les macarons",           en:"Macarons",            ex:"Need resting before baking."},
+        {fr:"Les madeleines",         en:"Madeleines",          ex:"Chill batter before baking."},
+        {fr:"Les financiers",         en:"Financiers",          ex:"Use brown butter."},
+        {fr:"Les congolais",          en:"Coconut macaroons",   ex:"Shape into little mounds."},
+        {fr:"Les sablés à la poche",  en:"Piped shortbread",    ex:"Pipe rosettes."},
+        {fr:"Les palets bretons",     en:"Breton shortbread cookies",ex:"Bake the palets in rings."},
+        {fr:"Les diamants",           en:"Sugar-rimmed shortbread cookies", ex:"Roll in sugar before slicing."},
+        {fr:"Les cannelés",           en:"Cannelés",            ex:"Rest the cannelé batter for 24 hours."},
+        {fr:"Les palmiers",           en:"Palmiers",            ex:"Roll the puff pastry in sugar for palmiers."},
+        {fr:"Les calissons",          en:"Calissons",           ex:"Calissons are made of almonds and melon."},
+        {fr:"Les pâtes de fruits",    en:"Fruit jellies",       ex:"Roll the fruit jellies in sugar."},
+        {fr:"Les guimauves",          en:"Marshmallows",        ex:"Cut the marshmallows into cubes."},
+        {fr:"Les chouquettes",        en:"Sugar puffs",         ex:"Sprinkle pearl sugar on the sugar puffs."},
+        {fr:"Les meringues",          en:"Meringues",           ex:"Dry the meringues slowly."},
+        {fr:"Les mignardises",        en:"Mignardises",         ex:"Serve mignardises with coffee."}
+    ]
+};
+
+/* ─── CALCULS CAP ────────────────────────────────────────────────── */
+const CONVERSIONS = [
+    {q:"Pour une pâte sucrée, quelle quantité de beurre pour 300g de farine (base 500g farine, 60g beurre) ?", opts:["30g","36g","40g","45g"], ok:1, why:"Produit en croix : (300×60)÷500 = 36g"},
+    {q:"Recette initiale : 250g sucre, 4 oeufs. Combien d'oeufs pour 125g de sucre ?",                        opts:["1 oeuf","2 oeufs","3 oeufs","4 oeufs"], ok:1, why:"Coefficient : 125÷250 = 0,5 → 4×0,5 = 2 oeufs"},
+    {q:"1L de lait, 200g de sucre en base. Quelle quantité de sucre pour 750mL de lait ?",                    opts:["100g","125g","150g","175g"], ok:2, why:"Coefficient : 0,75 → 200×0,75 = 150g"},
+    {q:"Recette 300g farine, 3 oeufs. Combien d'oeufs pour 500g de farine ?",                                 opts:["4 oeufs","5 oeufs","6 oeufs","7 oeufs"], ok:1, why:"Coefficient : 500÷300 ≈ 1,67 → 3×1,67 ≈ 5 oeufs"},
+    {q:"Recette pour 8 personnes : 400g de crème. Quelle quantité pour 12 personnes ?",                       opts:["500g","550g","600g","650g"], ok:2, why:"Coefficient : 12÷8 = 1,5 → 400×1,5 = 600g"},
+    {q:"Ganache noire : 400g crème pour 600g chocolat. Combien de crème pour 300g de chocolat ?",             opts:["150g","175g","200g","220g"], ok:2, why:"Coefficient : 300÷600 = 0,5 → 400×0,5 = 200g"},
+    {q:"Macaron : 200g sucre glace, 200g poudre d'amandes. Combien de sucre glace pour 100g de poudre ?",     opts:["75g","100g","125g","150g"], ok:1, why:"Rapport 1:1 → 100g de sucre glace"},
+    {q:"Crème pâtissière : 1L de lait, 200g de sucre. Quelle quantité de sucre pour 500mL de lait ?",         opts:["75g","100g","110g","120g"], ok:1, why:"Coefficient : 0,5 → 200×0,5 = 100g"},
+    {q:"Pâte à choux : base 500g eau, 200g beurre. Combien de beurre pour 300g d'eau ?",                      opts:["100g","110g","120g","130g"], ok:2, why:"Coefficient : 300÷500 = 0,6 → 200×0,6 = 120g"},
+    {q:"Quelle proportion sucre/eau pour un sirop à 30°Brix ?",                                               opts:["30/70","40/60","50/50","60/40"], ok:0, why:"30°Brix = 30g de sucre pour 100g de sirop = 30g sucre / 70g eau"},
+    {q:"Biscuit joconde : 250g poudre d'amandes, 250g sucre. Pour 125g de poudre, combien de sucre ?",        opts:["100g","115g","125g","140g"], ok:2, why:"Rapport 1:1 → 125g de sucre"},
+    {q:"Mousse chocolat : 200g couverture, 400g crème. Pour 100g de couverture, combien de crème ?",          opts:["150g","175g","200g","250g"], ok:2, why:"Coefficient : 100÷200 = 0,5 → 400×0,5 = 200g"},
+    {q:"Pâte sucrée : 500g farine, 250g beurre. Combien de beurre pour 200g de farine ?",                     opts:["80g","100g","120g","125g"], ok:1, why:"Coefficient : 200÷500 = 0,4 → 250×0,4 = 100g"},
+    {q:"1 kg de pâte permet de foncer 10 tartelettes. Quelle masse de pâte pour 25 tartelettes ?",            opts:["2 kg","2,25 kg","2,5 kg","3 kg"], ok:2, why:"Coefficient : 25÷10 = 2,5 → 1 kg × 2,5 = 2,5 kg"},
+    {q:"Chantilly : 500g de crème, 50g de sucre glace. Quelle quantité de sucre glace pour 750g de crème ?",  opts:["65g","70g","75g","80g"], ok:2, why:"Coefficient : 750÷500 = 1,5 → 50×1,5 = 75g"},
+    {q:"Génoise : 6 oeufs, 180g de sucre. Quelle quantité de sucre pour 9 oeufs ?",                           opts:["240g","255g","270g","300g"], ok:2, why:"Coefficient : 9÷6 = 1,5 → 180×1,5 = 270g"},
+    {q:"Convertir 1,25 kg en grammes.",                                                                       opts:["125g","1 025g","1 250g","12 500g"], ok:2, why:"1 kg = 1 000g → 1,25 kg = 1 250g"},
+    {q:"Un oeuf entier pèse environ 50g. Quel poids pour 8 oeufs entiers ?",                                  opts:["300g","350g","400g","450g"], ok:2, why:"8 × 50g = 400g"},
+    {q:"Une pâte de 1 kg perd 10% de son poids à la cuisson. Quel est le poids après cuisson ?",              opts:["800g","850g","900g","950g"], ok:2, why:"10% de 1 000g = 100g → 1 000 − 100 = 900g"},
+    {q:"Le beurre coûte 8 € le kilo. Combien coûtent 250g de beurre ?",                                       opts:["1 €","1,50 €","2 €","2,50 €"], ok:2, why:"250g = 0,25 kg → 8 × 0,25 = 2 €"},
+    {q:"Sirop 1:1 (autant de sucre que d'eau). Pour 400g d'eau, quelle quantité de sucre ?",                  opts:["200g","400g","600g","800g"], ok:1, why:"Rapport 1:1 → 400g de sucre"},
+    {q:"Une recette pour 10 pièces demande 150g de sucre. Quelle quantité pour 24 pièces ?",                  opts:["300g","330g","360g","400g"], ok:2, why:"Coefficient : 24÷10 = 2,4 → 150×2,4 = 360g"}
+];
+
+/* ─── PÂTISSERIES DU MONDE (les mauvaises réponses sont tirées au sort) ─── */
+const WORLD = [
+    {q:"Mille-feuille (France)",       ans:"Thousand layers pastry", flag:"🇫🇷"},
+    {q:"Kouign-Amann (France)",        ans:"Butter cake",            flag:"🇫🇷"},
+    {q:"Paris-Brest (France)",         ans:"Praline choux ring",     flag:"🇫🇷"},
+    {q:"Opéra (France)",               ans:"Coffee chocolate layer cake", flag:"🇫🇷"},
+    {q:"Tarte Tatin (France)",         ans:"Upside-down apple tart", flag:"🇫🇷"},
+    {q:"Crème brûlée (France)",        ans:"Burnt custard",          flag:"🇫🇷"},
+    {q:"Macaron (France)",             ans:"Almond meringue sandwich",flag:"🇫🇷"},
+    {q:"Tiramisu (Italy)",             ans:"Coffee mascarpone dessert",flag:"🇮🇹"},
+    {q:"Cannoli (Italy)",              ans:"Fried pastry tube",      flag:"🇮🇹"},
+    {q:"Panna cotta (Italy)",          ans:"Set cream dessert",      flag:"🇮🇹"},
+    {q:"Sachertorte (Austria)",        ans:"Chocolate apricot cake", flag:"🇦🇹"},
+    {q:"Apfelstrudel (Austria)",       ans:"Rolled apple pastry",    flag:"🇦🇹"},
+    {q:"Black Forest cake (Germany)",  ans:"Cherry chocolate cake",  flag:"🇩🇪"},
+    {q:"Baklava (Turkey)",             ans:"Layered nut pastry",     flag:"🇹🇷"},
+    {q:"Churros (Spain)",              ans:"Fried dough sticks",     flag:"🇪🇸"},
+    {q:"Pastel de Nata (Portugal)",    ans:"Custard tart",           flag:"🇵🇹"},
+    {q:"Stroopwafel (Netherlands)",    ans:"Caramel wafer",          flag:"🇳🇱"},
+    {q:"Eton Mess (United Kingdom)",   ans:"Meringue, cream and strawberries", flag:"🇬🇧"},
+    {q:"Scones (United Kingdom)",      ans:"Small tea-time cakes",   flag:"🇬🇧"},
+    {q:"Pavlova (Australia / New Zealand)", ans:"Meringue fruit dessert", flag:"🇦🇺"},
+    {q:"Lamington (Australia)",        ans:"Coconut-coated sponge cube", flag:"🇦🇺"},
+    {q:"Mochi (Japan)",                ans:"Sticky rice cake",       flag:"🇯🇵"},
+    {q:"Dorayaki (Japan)",             ans:"Red bean pancake sandwich", flag:"🇯🇵"},
+    {q:"Gulab jamun (India)",          ans:"Syrup-soaked milk balls",flag:"🇮🇳"},
+    {q:"Brigadeiro (Brazil)",          ans:"Chocolate fudge ball",   flag:"🇧🇷"},
+    {q:"Alfajores (Argentina)",        ans:"Dulce de leche cookie sandwich", flag:"🇦🇷"},
+    {q:"Brownie (United States)",      ans:"Dense chocolate square", flag:"🇺🇸"},
+    {q:"Kürtőskalács (Hungary)",       ans:"Chimney cake",           flag:"🇭🇺"}
+];
+
+/* ─── ÉCOUTE & SERVICE & RECETTES ────────────────────────────────── */
+const LISTENING = [
+    {audio:"Whisk the egg whites until stiff peaks form.",        opts:["Whisk whites","Fold flour","Melt butter","Boil milk"],             ans:"Whisk whites"},
+    {audio:"Sift the flour and cocoa powder together.",           opts:["Sieve flour","Mix eggs","Whip cream","Chop chocolate"],            ans:"Sieve flour"},
+    {audio:"Fold the meringue into the almond mixture.",          opts:["Fold meringue","Whisk yolks","Knead dough","Roll pastry"],         ans:"Fold meringue"},
+    {audio:"Pipe the choux pastry onto a baking tray.",           opts:["Pipe choux","Spread cream","Cut fruit","Grate zest"],              ans:"Pipe choux"},
+    {audio:"Temper the dark chocolate to 31 degrees.",            opts:["Temper chocolate","Melt butter","Boil sugar","Whip cream"],        ans:"Temper chocolate"},
+    {audio:"Preheat the oven to 180 degrees Celsius.",            opts:["Preheat oven","Chill bowl","Freeze cake","Boil water"],            ans:"Preheat oven"},
+    {audio:"Glaze the entremet with mirror glaze.",               opts:["Glaze cake","Dust sugar","Pipe cream","Spread jam"],               ans:"Glaze cake"},
+    {audio:"Blind bake the tart shell with baking weights.",      opts:["Blind bake","Glaze tart","Fill cream","Score dough"],              ans:"Blind bake"},
+    {audio:"Crimp the edges of the tart.",                        opts:["Crimp edges","Roll pastry","Cut circles","Prick dough"],           ans:"Crimp edges"},
+    {audio:"Reduce the sugar syrup by half.",                     opts:["Reduce syrup","Boil cream","Cool glaze","Strain sauce"],           ans:"Reduce syrup"},
+    {audio:"Weigh the ingredients carefully.",                    opts:["Weigh ingredients","Wash dishes","Chop nuts","Pour milk"],         ans:"Weigh ingredients"},
+    {audio:"Let the dough rest in the fridge for one hour.",      opts:["Rest dough","Bake dough","Roll dough","Freeze dough"],             ans:"Rest dough"},
+    {audio:"Line the mold with parchment paper.",                 opts:["Line mold","Grease tray","Cut paper","Fill mold"],                 ans:"Line mold"},
+    {audio:"Whip the cream to soft peaks.",                       opts:["Whip cream","Boil cream","Pour cream","Chill cream"],              ans:"Whip cream"},
+    {audio:"Melt the butter over low heat.",                      opts:["Melt butter","Soften butter","Cube butter","Brown butter"],        ans:"Melt butter"},
+    {audio:"Dust the cake with icing sugar.",                     opts:["Dust cake","Fill cake","Slice cake","Glaze cake"],                 ans:"Dust cake"},
+    {audio:"Add the eggs one at a time.",                         opts:["Add eggs","Crack nuts","Beat cream","Sift eggs"],                  ans:"Add eggs"},
+    {audio:"Bake for twenty minutes until golden brown.",         opts:["Bake until golden","Chill until firm","Boil until thick","Whisk until pale"], ans:"Bake until golden"},
+    {audio:"Strain the custard through a fine sieve.",            opts:["Strain custard","Stir custard","Cool custard","Pour custard"],     ans:"Strain custard"},
+    {audio:"Pipe small rosettes on the tray.",                    opts:["Pipe rosettes","Cut rounds","Roll balls","Spread batter"],         ans:"Pipe rosettes"},
+    {audio:"Soak the gelatin leaves in cold water.",              opts:["Soak gelatin","Boil gelatin","Whisk gelatin","Bake gelatin"],      ans:"Soak gelatin"}
+];
+
+const ROLEPLAY = [
+    {scene:"Counter Sales",    ctx:"Customer: 'Is this tart very sweet?'",                      opts:["Yes, extremely sweet.","It has balanced, subtle flavors.","I don't know."],         ok:1, tip:"Describe flavors accurately and professionally."},
+    {scene:"Allergen Inquiry", ctx:"Customer: 'Does this contain any nuts?'",                   opts:["Let me check the recipe for you.","Maybe, I'm not sure.","No nuts at all."],        ok:0, tip:"Never guess with allergens. Always verify."},
+    {scene:"Custom Order",     ctx:"Customer: 'Can I order a birthday cake for 20 people?'",    opts:["We're too busy.","We don't do custom orders.","Certainly! When would you like to collect it?"], ok:2, tip:"Accept orders and confirm the date and time."},
+    {scene:"Complaint",        ctx:"Customer: 'This croissant isn't fresh.'",                   opts:["That's how they are.","I apologize. Let me replace it.","Eat it sooner."],          ok:1, tip:"Offer solutions when customers are unsatisfied."},
+    {scene:"Price Query",      ctx:"Customer: 'How much is this éclair?'",                      opts:["It's 2.50 euros.","Too expensive.","I'm busy."],                                    ok:0, tip:"Always answer price questions politely."},
+    {scene:"Allergy",          ctx:"Customer: 'I'm gluten intolerant, what can I eat?'",        opts:["Nothing here, sorry.","Let me show you our gluten-free selection.","I don't know."],ok:1, tip:"Know your products and guide the customer."},
+    {scene:"Recommendation",   ctx:"Customer: 'What do you recommend for a gift?'",             opts:["I don't know.","Our macarons make a beautiful gift box.","Buy the bread."],         ok:1, tip:"Suggest premium products for special occasions."},
+    {scene:"Storage",          ctx:"Customer: 'How long does this mousse cake keep?'",          opts:["Forever.","Keep refrigerated, consume within 2 days.","One week."],                 ok:1, tip:"Give accurate conservation advice."},
+    {scene:"Phone Order",      ctx:"Customer: 'I'd like to pick up my order at 5 pm.'",         opts:["Of course, it will be ready for you.","We close at noon.","Call back later."],     ok:0, tip:"Confirm the pick-up time clearly."},
+    {scene:"Opening Hours",    ctx:"Customer: 'What time do you close?'",                       opts:["I don't know.","Please look at the sign at the door, sir.","We close at 7 pm today."], ok:2, tip:"Give clear and precise information."},
+    {scene:"Vegan Request",    ctx:"Customer: 'Do you have vegan pastries?'",                   opts:["No, go elsewhere.","Let me show you what is dairy and egg free.","Ask someone else."], ok:1, tip:"Be helpful and know your product range."},
+    {scene:"Wedding Cake",     ctx:"Customer: 'We need a wedding cake. Can you help?'",         opts:["It's too difficult.","Choose any cake.","Of course! Let's discuss flavors and the number of guests."], ok:2, tip:"Ask questions to understand the order."},
+    {scene:"Payment",          ctx:"Customer: 'Can I pay by card?'",                            opts:["Yes, of course. Please insert your card.","Cash only, don't ask.","Maybe."],        ok:0, tip:"Answer payment questions clearly and politely."},
+    {scene:"Wrong Order",      ctx:"Customer: 'This isn't what I ordered.'",                    opts:["You're wrong.","I'm very sorry. Let me fix that right away.","Too late now."],     ok:1, tip:"Apologize and solve the problem."},
+    {scene:"Ingredients",      ctx:"Customer: 'What is in this macaron?'",                      opts:["It's a secret.","I forgot.","Almond flour, sugar, egg whites and a ganache filling."], ok:2, tip:"Know the ingredients of every product."},
+    {scene:"Gift Wrapping",    ctx:"Customer: 'Could you box it for a gift?'",                  opts:["No time.","Certainly! Would you like a ribbon?","The box costs a fortune."],        ok:1, tip:"Offer a pleasant, personalized service."},
+    {scene:"Tasting",          ctx:"Customer: 'Can I try a macaron first?'",                    opts:["Never.","Pay first.","Of course! Which flavor would you like?"],                   ok:2, tip:"Welcome customers warmly."}
+];
+
+const RECIPES = [
+    {name:"Pastry Cream",     steps:["Boil the milk","Whisk yolks and sugar","Add cornstarch","Pour hot milk","Cook until thick","Cool with film"]},
+    {name:"Macaron Shells",   steps:["Sift almond flour","Make French meringue","Fold dry ingredients","Macaronage batter","Pipe onto trays","Rest 20 minutes","Bake 12 minutes"]},
+    {name:"Chocolate Ganache",steps:["Chop the chocolate","Boil heavy cream","Pour over chocolate","Stir from center","Emulsify well","Cool before using"]},
+    {name:"Choux Pastry",     steps:["Boil water and butter","Add flour all at once","Dry the dough","Add eggs gradually","Pipe onto tray","Egg wash","Bake at 200°C"]},
+    {name:"Mirror Glaze",     steps:["Bloom gelatin","Boil sugar and water","Add condensed milk","Pour over chocolate","Add gelatin","Blend smooth","Use at 35°C"]},
+    {name:"Custard Sauce",    steps:["Boil milk and vanilla","Whisk yolks and sugar","Pour milk over yolks","Cook to 83°C","Strain the sauce","Chill in an ice bath"]},
+    {name:"Sweet Pastry",     steps:["Cream butter and icing sugar","Add the egg","Add the flour","Mix until just combined","Wrap in film","Rest in the fridge"]},
+    {name:"Genoise Sponge",   steps:["Whisk eggs and sugar over heat","Whisk to ribbon stage","Fold in sifted flour","Add melted butter","Pour into the mold","Bake at 180°C"]},
+    {name:"Italian Meringue", steps:["Start whipping the whites","Cook sugar to 121°C","Pour syrup in a thin stream","Whisk until cool","Pipe immediately"]},
+    {name:"Crumble",          steps:["Cube the cold butter","Rub butter into flour and sugar","Chill the crumble","Spread over the fruit","Bake until golden"]},
+    {name:"Lemon Curd",       steps:["Zest the lemons","Whisk eggs, sugar and juice","Cook gently while stirring","Strain the curd","Add cold butter","Blend smooth","Chill under film"]}
+];
+
+/* ─── NIVEAUX ────────────────────────────────────────────────────── */
+const LEVELS = {
+    1:{name:"Apprentice",  icon:"👨‍🍳", xp:0,    full:"Débutant en pâtisserie"},
+    2:{name:"Commis",      icon:"🥐",   xp:200,  full:"Assistant pâtissier"},
+    3:{name:"Pastry Chef", icon:"🎂",   xp:700,  full:"Pâtissier confirmé"},
+    4:{name:"Head Chef",   icon:"🏆",   xp:1800, full:"Chef pâtissier"},
+    5:{name:"MOF",         icon:"👑",   xp:5500, full:"Meilleur Ouvrier de France"}
+};
+
+/* ─── ÉTAT ───────────────────────────────────────────────────────── */
+let S = {
+    xp:0, streak:0, dailyXP:0,
+    mode:"flashcard", theme:"Basic Ingredients", transTheme:Object.keys(DB_TRANS)[0],
+    deck:[], idx:0, flipped:false,
+    listenItem:null, listenOpts:null, listenOk:0, listenPos:0,
+    roleItem:null, roleOpts:null, roleOk:0,
+    recipeItem:null, userSteps:[], selStep:null, recipeDone:false,
+    convItem:null, convOpts:null, convOk:0, convPos:0,
+    worldItem:null, worldOpts:null, worldPos:0,
+    rushTimer:null, rushLeft:0, rushItem:null,
+    memTimer:null, mem:null,
+    lastAnswer:0
+};
+
+try {
+    S.xp      = parseInt(localStorage.getItem('pep_xp'))  || 0;
+    S.streak  = parseInt(localStorage.getItem('pep_str')) || 0;
+    S.dailyXP = parseInt(localStorage.getItem('pep_day')) || 0;
+} catch(e){}
+
+/* ─── OUTILS ─────────────────────────────────────────────────────── */
+function shuffle(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]];}return b;}
+function shuffleWithIdx(arr,ci){const wi=arr.map((item,i)=>({item,i}));const s=shuffle(wi);return{items:s.map(x=>x.item),ci:s.findIndex(x=>x.i===ci)};}
+function speak(txt){try{window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(txt);u.lang='en-GB';u.rate=0.88;window.speechSynthesis.speak(u);}catch(e){}}
+function norm(s){
+    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/[’]/g,"'").replace(/[^a-z0-9' ]/g,'').replace(/\s+/g,' ').trim()
+        .replace(/^(the|a|an) /,'');
+}
+function allWords(){return Object.values(DB).flat();}
+
+/* Tirage sans répétition : toutes les questions passent avant de recommencer */
+const BAGS = {};
+function draw(name,n){
+    if(!BAGS[name]||!BAGS[name].length) BAGS[name]=shuffle([...Array(n).keys()]);
+    const i=BAGS[name].pop();
+    return {i,pos:n-BAGS[name].length};
+}
+
+/* ─── XP ─────────────────────────────────────────────────────────── */
+const XP_M = {flashcard:0.3,quiz:0.7,listening:1.0,roleplay:1.0,world:1.0,recipe:1.3,rush:1.5,translation:0.8,conversion:1.2,memory:1.0};
+const MAX_D = 380;
+
+function checkDailyReset(){
+    try{
+        const today=new Date().toDateString();
+        if(localStorage.getItem('pep_date')!==today){
+            S.dailyXP=0;
+            localStorage.setItem('pep_day','0');
+            localStorage.setItem('pep_date',today);
+        }
+    }catch(e){}
+}
+
+function earnXP(base,mode){
+    checkDailyReset();
+    if(S.dailyXP>=MAX_D){popup("Limite quotidienne atteinte !",0);return;}
+    const m=XP_M[mode]||1, sb=1+Math.min(S.streak*0.05,0.4);
+    const sp=(Date.now()-S.lastAnswer)<3000?0.4:1.0;
+    S.lastAnswer=Date.now();
+    const amt=Math.min(Math.max(1,Math.round(base*m*sb*sp)),MAX_D-S.dailyXP);
+    S.xp+=amt; S.dailyXP+=amt;
+    if(mode!=='flashcard'&&mode!=='translation') S.streak++;
+    save(); updateHUD(); popup(`+${amt} XP`,amt);
+}
+function loseStreak(){S.streak=0;save();updateHUD();}
+
+function save(){
+    try{
+        localStorage.setItem('pep_xp',  S.xp);
+        localStorage.setItem('pep_str', S.streak);
+        localStorage.setItem('pep_day', S.dailyXP);
+    }catch(e){}
+}
+
+function popup(txt,amt){
+    document.querySelectorAll('.xp-pop').forEach(e=>e.remove());
+    const el=document.createElement('div');
+    el.className='xp-pop'; el.textContent=txt;
+    el.style.color=amt>0?'var(--gold2)':'#FF8C42';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1300);
+}
+
+function getLevel(){
+    for(let i=5;i>=1;i--) if(S.xp>=LEVELS[i].xp) return{...LEVELS[i],lvl:i,next:LEVELS[i+1]};
+    return{...LEVELS[1],lvl:1,next:LEVELS[2]};
+}
+
+function updateHUD(){
+    const L=getLevel();
+    document.getElementById('lvl-icon').textContent=L.icon;
+    document.getElementById('lvl-name').textContent=`Niveau ${L.lvl} · ${L.name}`;
+    document.getElementById('lvl-sub').textContent=L.full;
+    document.getElementById('xp-pill').textContent=`${S.xp} XP`;
+    const sb=document.getElementById('streak-bar');
+    sb.textContent=`🔥 ${S.streak}`; sb.className='streak-bar'+(S.streak>=5?' hot':'');
+    const prev=L.xp;
+    const pct=L.next?Math.min(100,((S.xp-prev)/(L.next.xp-prev))*100):100;
+    document.getElementById('prog-fill').style.width=pct+'%';
+    let dots='';
+    for(let i=1;i<=5;i++){
+        const done=S.xp>=LEVELS[i].xp, now=i===L.lvl;
+        dots+=`<div class="lvl-dot ${done?'done':''} ${now?'now':''}">
+                 <div class="lvl-dot-c">${LEVELS[i].icon}</div>
+                 <span class="lvl-dot-lbl">${LEVELS[i].name}</span>
+               </div>`;
+    }
+    document.getElementById('lvl-dots').innerHTML=dots;
+}
+
+/* ─── NAVIGATION ─────────────────────────────────────────────────── */
+function stopTimers(){clearInterval(S.rushTimer);clearTimeout(S.memTimer);try{window.speechSynthesis.cancel();}catch(e){}}
+
+function goGame(){
+    document.getElementById('home-screen').style.display='none';
+    document.getElementById('game-screen').style.display='flex';
+    updateHUD(); setMode('flashcard');
+}
+function goHome(){
+    stopTimers();
+    document.getElementById('game-screen').style.display='none';
+    document.getElementById('home-screen').style.display='flex';
+    updateHomeStats();
+}
+
+const MODES=[
+    ['flashcard','📚 Cards'],['quiz','❓ Quiz'],['memory','🃏 Memory'],
+    ['listening','👂 Audio'],['roleplay','🎭 Service'],['recipe','📜 Recipes'],
+    ['rush','⏱️ Rush'],['translation','📖 Traduction'],['conversion','🔢 Calculs'],['world','🌍 World']
+];
+function renderModeMenu(){
+    const menu=document.getElementById('mode-menu');
+    menu.innerHTML=MODES.map(([m,l])=>`<button class="menu-btn ${S.mode===m?'active':''}" data-mode="${m}">${l}</button>`).join('');
+    centerActive(menu);
+}
+
+function curDB(){return S.mode==='translation'?DB_TRANS:DB;}
+function curTheme(){return S.mode==='translation'?S.transTheme:S.theme;}
+
+function renderThemeMenu(show){
+    const menu=document.getElementById('theme-menu');
+    if(!show){menu.style.display='none';menu.innerHTML='';return;}
+    menu.style.display='flex';
+    const cur=curTheme();
+    menu.innerHTML=Object.keys(curDB()).map(k=>`<button class="menu-btn ${k===cur?'active':''}" data-theme="${k}">${k}</button>`).join('');
+    centerActive(menu);
+}
+function centerActive(menu){
+    const a=menu.querySelector('.active');
+    if(a) menu.scrollLeft=a.offsetLeft-(menu.clientWidth-a.clientWidth)/2;
+}
+
+function setMode(m){
+    stopTimers();
+    S.mode=m; S.flipped=false; S.idx=0;
+    renderModeMenu();
+    const usesThemes=(m==='flashcard'||m==='quiz'||m==='translation');
+    renderThemeMenu(usesThemes);
+    if(usesThemes) S.deck=shuffle([...curDB()[curTheme()]]);
+    switch(m){
+        case 'flashcard': case 'translation': renderFlashcard(); break;
+        case 'quiz':      renderQuiz(); break;
+        case 'listening': initListening(); break;
+        case 'roleplay':  initRoleplay(); break;
+        case 'recipe':    initRecipe(); break;
+        case 'rush':      renderRush('idle'); break;
+        case 'memory':    initMemory(); break;
+        case 'conversion':initConversion(); break;
+        case 'world':     initWorld(); break;
+    }
+}
+
+function setTheme(th){
+    if(S.mode==='translation') S.transTheme=th; else S.theme=th;
+    renderThemeMenu(true);
+    S.deck=shuffle([...curDB()[th]]); S.idx=0; S.flipped=false;
+    if(S.mode==='quiz') renderQuiz(); else renderFlashcard();
+}
+
+/* ─── FLASHCARD / TRADUCTION ─────────────────────────────────────── */
+function renderFlashcard(){
+    const item=S.deck[S.idx], trans=S.mode==='translation';
+    document.getElementById('game-card').innerHTML=`
+        <div class="mode-lbl ${trans?'lav':''}">${trans?'📖 Traduction':'📚 Flashcard'} · ${curTheme()}</div>
+        <div class="fc-count">🧁 ${S.idx+1} / ${S.deck.length}</div>
+        <div class="fc-word ${S.flipped?'flip':''}" id="fc-w">${S.flipped?item.en:item.fr}</div>
+        ${S.flipped?`<div class="fc-ex">"${item.ex}"</div>`:`<div class="fc-hint">Touchez le mot pour retourner</div>`}
+    `;
+    document.getElementById('ctrl-area').innerHTML=`
+        <div class="btn-row">
+            <button class="btn-nav" id="fc-p" ${S.idx===0?'disabled':''}>◀</button>
+            <button class="btn-sound" id="fc-s" aria-label="Écouter">🔊</button>
+            <button class="btn-nav" id="fc-n">Suivant ▶</button>
+        </div>
+    `;
+    document.getElementById('fc-w').addEventListener('click',()=>{
+        S.flipped=!S.flipped;
+        if(S.flipped){earnXP(trans?5:3,trans?'translation':'flashcard');speak(item.en);}
+        renderFlashcard();
+    });
+    document.getElementById('fc-p').addEventListener('click',()=>{if(S.idx>0){S.idx--;S.flipped=false;renderFlashcard();}});
+    document.getElementById('fc-n').addEventListener('click',()=>{
+        S.idx=(S.idx+1)%S.deck.length;
+        if(S.idx===0)S.deck=shuffle(S.deck);
+        S.flipped=false;renderFlashcard();
+    });
+    document.getElementById('fc-s').addEventListener('click',()=>speak(item.en));
+}
+
+/* ─── QUIZ ───────────────────────────────────────────────────────── */
+function renderQuiz(){
+    const item=S.deck[S.idx];
+    const pool=[...new Set(allWords().map(x=>x.en))].filter(e=>e!==item.en);
+    const opts=shuffle([item.en,...shuffle(pool).slice(0,3)]);
+    document.getElementById('game-card').innerHTML=`
+        <div class="mode-lbl">❓ Quiz · ${S.idx+1}/${S.deck.length}</div>
+        <div class="quiz-q">Translate to English:<b>${item.fr}</b></div>
+        <div class="quiz-opts">${opts.map((o,i)=>`<button class="quiz-opt" data-qi="${i}">${o}</button>`).join('')}</div>
+    `;
+    const next=()=>{S.idx=(S.idx+1)%S.deck.length;if(S.idx===0)S.deck=shuffle(S.deck);renderQuiz();};
+    document.getElementById('ctrl-area').innerHTML=`<button class="btn-nav" id="q-skip">Skip →</button>`;
+    document.getElementById('q-skip').addEventListener('click',next);
+    document.querySelectorAll('[data-qi]').forEach(btn=>btn.addEventListener('click',()=>{
+        const pick=parseInt(btn.dataset.qi), ok=opts[pick]===item.en;
+        document.querySelectorAll('[data-qi]').forEach(b=>{
+            const i=parseInt(b.dataset.qi); b.disabled=true;
+            if(opts[i]===item.en)b.classList.add('correct');
+            else if(i===pick)b.classList.add('wrong');
+        });
+        if(ok)earnXP(8,'quiz');else loseStreak();
+        document.getElementById('ctrl-area').innerHTML=`<button class="btn-nav ${ok?'success':'danger'}" id="q-n">${ok?'✓ Correct ! Suivant →':'✗ Answer: '+item.en+' →'}</button>`;
+        document.getElementById('q-n').addEventListener('click',next);
+    }));
+}
+
+/* ─── LISTENING ──────────────────────────────────────────────────── */
+function initListening(){
+    const d=draw('listen',LISTENING.length);
+    S.listenItem=LISTENING[d.i]; S.listenPos=d.pos;
+    const r=shuffleWithIdx(S.listenItem.opts,S.listenItem.opts.indexOf(S.listenItem.ans));
+    S.listenOpts=r.items; S.listenOk=r.ci;
+    renderListening(null);
+    speak(S.listenItem.audio);
+}
+function renderListening(sel){
+    const item=S.listenItem,opts=S.listenOpts,ans=sel!==null;
+    document.getElementById('game-card').innerHTML=`
+        <div class="mode-lbl">👂 Listening · ${S.listenPos}/${LISTENING.length}</div>
+        <p style="color:var(--muted);font-size:0.82rem;margin-bottom:4px;">Listen and choose:</p>
+        <button class="listen-btn" id="la" aria-label="Écouter">🔊</button>
+        <div class="quiz-opts">${opts.map((o,i)=>{let cls='quiz-opt';if(ans){if(i===S.listenOk)cls+=' correct';else if(i===sel)cls+=' wrong';}return`<button class="${cls}" data-li="${i}" ${ans?'disabled':''}>${o}</button>`;}).join('')}</div>
+        ${ans?`<div class="hint-box">🔊 "${item.audio}"</div>`:''}
+    `;
+    document.getElementById('la').addEventListener('click',()=>speak(item.audio));
+    if(!ans)document.querySelectorAll('[data-li]').forEach(b=>b.addEventListener('click',()=>{
+        const i=parseInt(b.dataset.li);
+        if(i===S.listenOk)earnXP(12,'listening');else loseStreak();
+        renderListening(i);
+    }));
+    document.getElementById('ctrl-area').innerHTML=ans?`<button class="btn-nav ${sel===S.listenOk?'success':'danger'}" id="la-n">${sel===S.listenOk?'✓ Correct ! Suivant →':'✗ '+item.ans+' → Suivant'}</button>`:'';
+    if(ans)document.getElementById('la-n').addEventListener('click',initListening);
+}
+
+/* ─── ROLEPLAY ───────────────────────────────────────────────────── */
+function initRoleplay(){
+    const d=draw('role',ROLEPLAY.length);
+    S.roleItem=ROLEPLAY[d.i];
+    const r=shuffleWithIdx(S.roleItem.opts,S.roleItem.ok);
+    S.roleOpts=r.items; S.roleOk=r.ci; renderRoleplay(null);
+}
+function renderRoleplay(sel){
+    const item=S.roleItem,opts=S.roleOpts,ci=S.roleOk,ans=sel!==null;
+    document.getElementById('game-card').innerHTML=`
+        <div class="mode-lbl">🎭 Service Scenario</div>
+        <div class="role-box"><div class="role-scene">${item.scene}</div><div class="role-dialog">"${item.ctx}"</div></div>
+        <p style="font-size:0.76rem;color:var(--muted);margin-bottom:10px;">Choose the best response:</p>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+            ${opts.map((o,i)=>{let s='';if(ans){if(i===ci)s='border-color:var(--green2);background:rgba(58,112,88,0.15);color:var(--green2)';else if(i===sel)s='border-color:var(--wrong2);background:rgba(136,40,40,0.15);color:var(--wrong2)';}return`<button class="quiz-opt" style="text-align:left;justify-content:flex-start;${s}" data-ri="${i}" ${ans?'disabled':''}>${o}</button>`;}).join('')}
+        </div>
+        ${ans?`<div class="hint-box">💡 ${item.tip}</div>`:''}
+    `;
+    document.getElementById('ctrl-area').innerHTML=ans?`<button class="btn-nav action" id="rp-n">Next Scenario →</button>`:'';
+    if(!ans)document.querySelectorAll('[data-ri]').forEach(b=>b.addEventListener('click',()=>{
+        const i=parseInt(b.dataset.ri);
+        if(i===ci)earnXP(15,'roleplay');else loseStreak();
+        renderRoleplay(i);
+    }));
+    if(ans)document.getElementById('rp-n').addEventListener('click',initRoleplay);
+}
+
+/* ─── RECIPE ─────────────────────────────────────────────────────── */
+function initRecipe(){
+    const d=draw('recipe',RECIPES.length);
+    S.recipeItem=RECIPES[d.i];
+    let s; let tries=0;
+    do{s=shuffle([...S.recipeItem.steps]);tries++;}
+    while(s.every((x,i)=>x===S.recipeItem.steps[i])&&tries<20);
+    S.userSteps=s; S.selStep=null; S.recipeDone=false; renderRecipe();
+}
+function renderRecipe(){
+    const r=S.recipeItem, done=S.recipeDone;
+    document.getElementById('game-card').innerHTML=`
+        <div class="mode-lbl">📜 Put the steps in order</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+            <div style="width:34px;height:34px;border-radius:50%;background:var(--bg2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🧁</div>
+            <div><div style="font-size:0.62rem;color:var(--rose2);text-transform:uppercase;letter-spacing:0.1em;font-weight:700;">Recipe</div><div style="font-weight:600;color:var(--cream)">${r.name}</div></div>
+        </div>
+        <p style="font-size:0.74rem;color:var(--muted);margin-bottom:10px;">Tap 2 steps to swap them</p>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+            ${S.userSteps.map((s,i)=>`<div class="recipe-step ${S.selStep===i?'selected':''} ${done?'done':''}" data-si="${i}"><div class="step-num">${done?'✓':i+1}</div>${s}</div>`).join('')}
+        </div>
+    `;
+    document.querySelectorAll('[data-si]').forEach(d=>d.addEventListener('click',()=>{
+        if(S.recipeDone)return;
+        const i=parseInt(d.dataset.si);
+        if(S.selStep===null){S.selStep=i;}
+        else{
+            [S.userSteps[S.selStep],S.userSteps[i]]=[S.userSteps[i],S.userSteps[S.selStep]];
+            S.selStep=null;
+            if(S.userSteps.every((s,k)=>s===r.steps[k])){S.recipeDone=true;earnXP(25,'recipe');}
+        }
+        renderRecipe();
+    }));
+    document.getElementById('ctrl-area').innerHTML=`<button class="btn-nav ${done?'success':'action'}" id="r-n">${done?'✓ Validated! New Recipe →':'🔄 New Recipe'}</button>`;
+    document.getElementById('r-n').addEventListener('click',initRecipe);
+}
+
+/* ─── RUSH ───────────────────────────────────────────────────────── */
+function renderRush(state){
+    const area=document.getElementById('game-card'),ctrl=document.getElementById('ctrl-area');
+    clearInterval(S.rushTimer);
+    if(state==='idle'){
+        area.innerHTML=`<div class="mode-lbl">⏱️ Rush Challenge</div><h3 style="font-family:'Libre Baskerville',serif;color:var(--cream);margin-bottom:8px;font-size:1.3rem;">🧁 Pastry Rush</h3><p style="color:var(--muted);font-size:0.82rem;">Type the English word in 15 seconds!</p>`;
+        ctrl.innerHTML=`<button class="btn-nav action" id="rush-go">▶ Start</button>`;
+        document.getElementById('rush-go').addEventListener('click',startRush);return;
+    }
+    if(state==='win'){
+        area.innerHTML=`<div style="text-align:center"><div style="font-size:3rem">✅</div><div style="color:var(--green2);font-weight:700;font-size:1.3rem;margin:8px 0">Correct!</div><div style="color:var(--muted)">${S.rushItem.en}</div></div>`;
+        ctrl.innerHTML=`<button class="btn-nav success" id="rush-n">Next ▶</button>`;
+        document.getElementById('rush-n').addEventListener('click',startRush);return;
+    }
+    if(state==='lose'){
+        area.innerHTML=`<div style="text-align:center"><div style="font-size:3rem">⏰</div><div style="color:var(--wrong2);font-weight:700;font-size:1.3rem;margin:8px 0">Time's up!</div><div style="color:var(--muted)">Answer: <strong style="color:var(--cream)">${S.rushItem.en}</strong></div></div>`;
+        ctrl.innerHTML=`<button class="btn-nav action" id="rush-r">Next ▶</button>`;
+        document.getElementById('rush-r').addEventListener('click',startRush);return;
+    }
+    area.innerHTML=`
+        <div class="mode-lbl">⏱️ Rush</div>
+        <div class="rush-timer ${S.rushLeft<5?'danger':''}" id="rush-t">${S.rushLeft.toFixed(1)}s</div>
+        <div class="fc-word" style="color:var(--cream);cursor:default">${S.rushItem.fr}</div>
+        <input class="rush-input" id="rush-i" type="text" placeholder="Type in English…" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+    `;
+    ctrl.innerHTML='';
+    const inp=document.getElementById('rush-i'); inp.focus();
+    inp.addEventListener('input',()=>{
+        if(norm(inp.value)===norm(S.rushItem.en)){clearInterval(S.rushTimer);earnXP(18,'rush');renderRush('win');}
+    });
+    S.rushTimer=setInterval(()=>{
+        S.rushLeft-=0.1;
+        const t=document.getElementById('rush-t');
+        if(t){t.textContent=Math.max(0,S.rushLeft).toFixed(1)+'s';t.className='rush-timer'+(S.rushLeft<5?' danger':'');}
+        if(S.rushLeft<=0){clearInterval(S.rushTimer);loseStreak();renderRush('lose');}
+    },100);
+}
+function startRush(){
+    const all=allWords(), d=draw('rush',all.length);
+    S.rushItem=all[d.i]; S.rushLeft=15; renderRush('play');
+}
+
+/* ─── MEMORY (NOUVEAU) : retrouve les paires FR ↔ EN ─────────────── */
+const MEM_PAIRS=6;
+function initMemory(){
+    clearTimeout(S.memTimer);
+    const seen=new Set();
+    const pool=allWords().filter(x=>{
+        if(x.fr.length>24||x.en.length>22||seen.has(x.en)||seen.has(x.fr))return false;
+        seen.add(x.en);seen.add(x.fr);return true;
+    });
+    const picks=shuffle(pool).slice(0,MEM_PAIRS);
+    const cards=[];
+    picks.forEach((p,i)=>{
+        cards.push({pair:i,lang:'fr',txt:p.fr,en:p.en});
+        cards.push({pair:i,lang:'en',txt:p.en,en:p.en});
+    });
+    S.mem={cards:shuffle(cards),open:[],matched:[],moves:0,lock:false,done:false};
+    renderMemory();
+}
+function renderMemory(){
+    const m=S.mem;
+    document.getElementById('game-card').innerHTML=`
+        <div class="mode-lbl">🃏 Memory · Find the pairs</div>
+        <div class="mem-info"><span>Coups : <b>${m.moves}</b></span><span>Paires : <b>${m.matched.length}/${MEM_PAIRS}</b></span></div>
+        <div class="mem-grid">
+            ${m.cards.map((c,i)=>{
+                const isM=m.matched.includes(c.pair), shown=isM||m.open.includes(i);
+                return`<button class="mem-card ${shown?'shown '+c.lang:''} ${isM?'matched':''}" data-mi="${i}">${shown?c.txt:'🧁'}</button>`;
+            }).join('')}
+        </div>
+        <div class="mem-legend"><span class="f">● Français</span><span class="e">● English</span></div>
+        ${m.done?`<div class="hint-box">🎉 Bravo ! Terminé en ${m.moves} coups.</div>`:''}
+    `;
+    document.getElementById('ctrl-area').innerHTML=`<button class="btn-nav ${m.done?'success':'action'}" id="mem-new">${m.done?'🎉 Rejouer':'🔄 Nouvelle partie'}</button>`;
+    document.getElementById('mem-new').addEventListener('click',initMemory);
+    document.querySelectorAll('[data-mi]').forEach(b=>b.addEventListener('click',()=>memClick(parseInt(b.dataset.mi))));
+}
+function memClick(i){
+    const m=S.mem;
+    if(!m||m.lock||m.done)return;
+    const c=m.cards[i];
+    if(m.open.includes(i)||m.matched.includes(c.pair))return;
+    m.open.push(i);
+    if(c.lang==='en')speak(c.txt);
+    if(m.open.length===2){
+        m.moves++;
+        const a=m.cards[m.open[0]], b=m.cards[m.open[1]];
+        if(a.pair===b.pair){
+            m.matched.push(a.pair); m.open=[];
+            earnXP(10,'memory');
+            if(m.matched.length===MEM_PAIRS){
+                m.done=true;
+                earnXP(m.moves<=8?25:(m.moves<=12?15:8),'memory');
+            }
+        }else{
+            m.lock=true;
+            S.memTimer=setTimeout(()=>{
+                if(S.mem!==m)return;
+                m.open=[];m.lock=false;renderMemory();
+            },1000);
+        }
+    }
+    renderMemory();
+}
+
+/* ─── CALCULS CAP ────────────────────────────────────────────────── */
+function initConversion(){
+    const d=draw('conv',CONVERSIONS.length);
+    S.convItem=CONVERSIONS[d.i]; S.convPos=d.pos;
+    const r=shuffleWithIdx(S.convItem.opts,S.convItem.ok);
+    S.convOpts=r.items; S.convOk=r.ci;
+    renderConversion();
+}
+function renderConversion(){
+    const ex=S.convItem,opts=S.convOpts;
+    document.getElementById('game-card').innerHTML=`
+        <div class="mode-lbl lav">🔢 Calculs CAP · ${S.convPos}/${CONVERSIONS.length}</div>
+        <div style="background:var(--bg2);border-radius:var(--r);padding:13px;margin:8px 0;">
+            <p style="color:var(--text);font-size:0.86rem;line-height:1.6">${ex.q}</p>
+        </div>
+        <div class="quiz-opts">
+            ${opts.map((o,i)=>`<button class="quiz-opt" data-ci="${i}" style="font-weight:600">${o}</button>`).join('')}
+        </div>
+        <div id="conv-res"></div>
+    `;
+    document.getElementById('ctrl-area').innerHTML='';
+    let answered=false;
+    document.querySelectorAll('[data-ci]').forEach(b=>b.addEventListener('click',()=>{
+        if(answered)return; answered=true;
+        const i=parseInt(b.dataset.ci),ok=i===S.convOk;
+        document.querySelectorAll('[data-ci]').forEach(x=>{
+            const k=parseInt(x.dataset.ci); x.disabled=true;
+            if(k===S.convOk)x.classList.add('correct'); else if(k===i)x.classList.add('wrong');
+        });
+        if(ok)earnXP(15,'conversion');else loseStreak();
+        document.getElementById('conv-res').innerHTML=`<div class="hint-box">💡 ${ex.why}</div>`;
+        document.getElementById('ctrl-area').innerHTML=`<button class="btn-nav ${ok?'success':'action'}" id="cv-n">${ok?'✓ Correct ! Suivant →':'Suivant →'}</button>`;
+        document.getElementById('cv-n').addEventListener('click',initConversion);
+    }));
+}
+
+/* ─── WORLD ──────────────────────────────────────────────────────── */
+function initWorld(){
+    const d=draw('world',WORLD.length);
+    S.worldItem=WORLD[d.i]; S.worldPos=d.pos;
+    const others=shuffle(WORLD.filter(w=>w.ans!==S.worldItem.ans).map(w=>w.ans)).slice(0,3);
+    S.worldOpts=shuffle([S.worldItem.ans,...others]);
+    renderWorld(null);
+}
+function renderWorld(sel){
+    const item=S.worldItem,opts=S.worldOpts,ans=sel!==null;
+    document.getElementById('game-card').innerHTML=`
+        <div class="mode-lbl lav">🌍 World Pastry · ${S.worldPos}/${WORLD.length}</div>
+        <p style="color:var(--muted);font-size:0.82rem;margin-bottom:8px">What is this pastry?</p>
+        <div class="world-q">${item.flag} ${item.q}</div>
+        <div class="quiz-opts">${opts.map((o,i)=>{let cls='quiz-opt';if(ans){if(o===item.ans)cls+=' correct';else if(i===sel)cls+=' wrong';}return`<button class="${cls}" data-wo="${i}" ${ans?'disabled':''}>${o}</button>`;}).join('')}</div>
+    `;
+    if(!ans)document.querySelectorAll('[data-wo]').forEach(b=>b.addEventListener('click',()=>{
+        const i=parseInt(b.dataset.wo);
+        if(opts[i]===item.ans)earnXP(12,'world');else loseStreak();
+        renderWorld(i);
+    }));
+    document.getElementById('ctrl-area').innerHTML=ans?`<button class="btn-nav ${opts[sel]===item.ans?'success':'action'}" id="wo-n">${opts[sel]===item.ans?'✓ Correct ! Next ▶':'Next ▶'}</button>`:'';
+    if(ans)document.getElementById('wo-n').addEventListener('click',initWorld);
+}
+
+/* ─── ACCUEIL ────────────────────────────────────────────────────── */
+function updateHomeStats(){
+    if(S.xp>0){
+        const L=getLevel();
+        document.getElementById('home-stats').style.display='block';
+        document.getElementById('h-icon').textContent=L.icon;
+        document.getElementById('h-name').textContent=`Niveau ${L.lvl} · ${L.name}`;
+        document.getElementById('h-xp').textContent=`${S.xp} XP${S.streak>0?' · 🔥 '+S.streak:''}`;
+    }
+}
+function countTerms(){
+    return Object.values(DB).flat().length+Object.values(DB_TRANS).flat().length;
+}
+
+document.addEventListener('DOMContentLoaded',()=>{
+    checkDailyReset(); updateHomeStats();
+    document.getElementById('home-count').textContent=`${countTerms()} termes · ${MODES.length} exercices`;
+    document.getElementById('btn-start').addEventListener('click',goGame);
+    document.getElementById('btn-back').addEventListener('click',goHome);
+    document.getElementById('mode-menu').addEventListener('click',e=>{
+        const btn=e.target.closest('[data-mode]');
+        if(btn)setMode(btn.dataset.mode);
+    });
+    document.getElementById('theme-menu').addEventListener('click',e=>{
+        const btn=e.target.closest('[data-theme]');
+        if(btn)setTheme(btn.dataset.theme);
+    });
+});
+</script>
+</body>
+</html>
